@@ -41,8 +41,8 @@ export default function Navbar() {
                         </>
                     ) : (
                         <li>
-                            <Link href="/register" className="btn btn-gold" onClick={() => setMenuOpen(false)}>
-                                Ro'yxatdan o'tish
+                            <Link href="/login" className="btn btn-gold" onClick={() => setMenuOpen(false)}>
+                                Kirish
                             </Link>
                         </li>
                     )}
