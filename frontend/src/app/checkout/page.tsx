@@ -1,10 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { api } from '@/lib/api';
 
-export default function CheckoutPage() {
+function CheckoutContent() {
     const params = useSearchParams();
     const router = useRouter();
     const { user, loading } = useAuth();
@@ -67,5 +67,13 @@ export default function CheckoutPage() {
                 </button>
             </div>
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={<div className="spinner" style={{ marginTop: 100 }} />}>
+            <CheckoutContent />
+        </Suspense>
     );
 }
