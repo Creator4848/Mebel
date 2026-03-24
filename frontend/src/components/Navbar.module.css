@@ -1,0 +1,91 @@
+.nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--wood-dark);
+    z-index: 999;
+    padding: 0 5%;
+    transition: box-shadow .3s;
+}
+
+.nav.scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .4);
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+}
+
+.links a {
+    color: rgba(255, 255, 255, .8);
+    font-size: .9rem;
+    font-weight: 500;
+    transition: color .2s;
+}
+
+.links a:hover {
+    color: var(--gold);
+}
+
+.adminLink {
+    color: var(--gold) !important;
+    font-weight: 700 !important;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    transition: all .3s;
+}
+
+@media (max-width: 768px) {
+    .links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--wood-dark);
+        padding: 20px 5%;
+        gap: 16px;
+    }
+
+    .links.open {
+        display: flex;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}

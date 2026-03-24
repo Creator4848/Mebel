@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MebelAkademiya — O'zbekistondagi #1 Mebel Maktabi</title>
+<meta name="description" content="MebelAkademiya — O'zbekistondagi eng yaxshi mebel ishlab chiqarish maktabi. Professional kurslar, sertifikat va ish topishda yordam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--wood-dark:#2C1810;--wood-warm:#A0522D;--gold:#C9893A;--cream:#F5EFE6;--white:#FEFCF9}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:#333;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Playfair Display',serif}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--gold);width:0%;z-index:9999;transition:width .1s}
+nav{position:fixed;top:3px;width:100%;background:var(--wood-dark);z-index:999;padding:0 5%;transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-family:'Playfair Display',serif;color:var(--white);font-size:1.4rem;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.btn{display:inline-block;padding:10px 24px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:all .25s;border:none;text-decoration:none}
+.btn-gold{background:var(--gold);color:var(--white)}
+.btn-gold:hover{background:#b87a2e;transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,137,58,.4)}
+.btn-outline{border:2px solid rgba(255,255,255,.5);color:var(--white);background:transparent}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
+.hamburger span{display:block;width:24px;height:2px;background:var(--white);transition:all .3s}
+#hero{min-height:100vh;background:linear-gradient(135deg,var(--wood-dark) 0%,#6B3A2A 100%);display:flex;align-items:center;padding:100px 5% 60px;color:var(--white)}
+.hero-content{flex:1;max-width:600px}
+.badge{display:inline-block;background:rgba(201,137,58,.2);border:1px solid var(--gold);color:var(--gold);padding:6px 16px;border-radius:20px;font-size:.8rem;font-weight:600;margin-bottom:20px}
+.hero-title{font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.15;margin-bottom:20px}
+.hero-title span{color:var(--gold)}
+.hero-desc{color:rgba(255,255,255,.75);font-size:1.05rem;line-height:1.7;margin-bottom:32px;font-weight:300}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:48px}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold)}
+.stat-label{font-size:.8rem;color:rgba(255,255,255,.6);margin-top:2px}
+.hero-right{flex:1;display:flex;flex-direction:column;gap:12px;max-width:420px;margin-left:60px}
+.wood-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;backdrop-filter:blur(4px);transition:transform .25s}
+.wood-card:hover{transform:translateX(6px)}
+.wood-dot{width:44px;height:44px;border-radius:50%;flex-shrink:0}
+.wood-info h4{color:var(--white);font-size:.95rem;margin-bottom:3px}
+.wood-info p{color:rgba(255,255,255,.55);font-size:.8rem}
+section .section-label{text-align:center;color:var(--wood-warm);font-weight:600;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+section h2.section-title{text-align:center;font-size:clamp(1.8rem,4vw,2.5rem);color:var(--wood-dark);margin-bottom:12px}
+.section-sub{text-align:center;color:#777;max-width:560px;margin:0 auto 48px;line-height:1.7}
+#kurslar{padding:80px 5%;background:var(--cream)}
+.filter-wrap{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px}
+.filter-btn{padding:8px 20px;border-radius:20px;border:2px solid var(--wood-warm);color:var(--wood-warm);background:transparent;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all .2s;font-size:.85rem}
+.filter-btn.active,.filter-btn:hover{background:var(--wood-warm);color:var(--white)}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.course-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(44,24,16,.08);transition:transform .25s,box-shadow .25s}
+.course-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(44,24,16,.15)}
+.course-img{height:140px;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.course-body{padding:20px}
+.level-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:.72rem;font-weight:600;margin-bottom:12px}
+.course-title{font-size:1.05rem;color:var(--wood-dark);margin-bottom:8px}
+.course-meta{display:flex;gap:16px;color:#888;font-size:.8rem;margin-bottom:12px}
+.course-footer{display:flex;align-items:center;justify-content:space-between}
+.course-price{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--wood-warm);font-weight:700}
+.course-price.free{color:#2a7a4b}
+.rating{font-size:.8rem;color:#777}
+#dastur{padding:80px 5%;background:var(--wood-dark);color:var(--white)}
+#dastur h2.section-title,#dastur .section-label{color:var(--cream)}
+#dastur .section-sub{color:rgba(255,255,255,.6)}
+.curriculum-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:0}
+.module-list{display:flex;flex-direction:column;gap:8px}
+.module-item{padding:16px 20px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;background:rgba(255,255,255,.05)}
+.module-item:hover{background:rgba(201,137,58,.1);border-color:rgba(201,137,58,.3)}
+.module-item.active{background:rgba(201,137,58,.15);border-color:var(--gold)}
+.module-num{color:var(--gold);font-size:.75rem;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.module-title{color:var(--white);font-size:.95rem;font-weight:500}
+.module-hours{color:rgba(255,255,255,.5);font-size:.8rem;margin-top:3px}
+.module-detail{background:rgba(255,255,255,.06);border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,.1)}
+.module-detail h3{color:var(--gold);font-size:1.3rem;margin-bottom:8px}
+.module-detail .hours-badge{display:inline-block;background:rgba(201,137,58,.2);color:var(--gold);padding:4px 14px;border-radius:12px;font-size:.8rem;margin-bottom:20px}
+.module-detail ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.module-detail ul li::before{content:"✦ ";color:var(--gold)}
+.module-detail ul li{color:rgba(255,255,255,.8);font-size:.9rem}
+.tools-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tool-tag{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);padding:5px 14px;border-radius:20px;font-size:.78rem;border:1px solid rgba(255,255,255,.12)}
+#ustaxona{padding:80px 5%;background:var(--white)}
+.workshop-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.process-list{display:flex;flex-direction:column;gap:24px}
+.process-step{display:flex;gap:20px;align-items:flex-start}
+.step-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--gold),#8B4513);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.step-info h4{color:var(--wood-dark);font-size:1rem;margin-bottom:6px}
+.step-info p{color:#777;font-size:.88rem;line-height:1.6}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tool-card{background:var(--cream);border-radius:14px;padding:20px;transition:transform .25s,box-shadow .25s}
+.tool-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(44,24,16,.12)}
+.tool-emoji{font-size:2rem;margin-bottom:10px}
+.tool-card h4{color:var(--wood-dark);font-size:.95rem;margin-bottom:6px}
+.tool-card p{color:#888;font-size:.8rem;line-height:1.5}
+#oqituvchilar{padding:80px 5%;background:var(--cream)}
+.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+.mentor-card{background:var(--white);border-radius:16px;padding:32px 24px;text-align:center;box-shadow:0 4px 20px rgba(44,24,16,.07);transition:transform .25s,box-shadow .25s}
+.mentor-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(44,24,16,.14)}
+.mentor-avatar{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 16px}
+.mentor-name{color:var(--wood-dark);font-size:1.1rem;margin-bottom:6px}
+.mentor-role{color:var(--wood-warm);font-size:.85rem;margin-bottom:8px;font-weight:500}
+.mentor-exp{color:#888;font-size:.82rem;margin-bottom:8px}
+.mentor-rating{color:var(--gold);font-size:.9rem;font-weight:600}
+#sertifikat{padding:80px 5%;background:linear-gradient(135deg,#3d1f0f 0%,#7a4020 100%);color:var(--white)}
+#sertifikat h2.section-title,#sertifikat .section-label{color:var(--cream)}
+#sertifikat .section-sub{color:rgba(255,255,255,.65)}
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.cert-benefits{display:flex;flex-direction:column;gap:20px}
+.cert-benefit{display:flex;gap:16px;align-items:flex-start}
+.cert-benefit-icon{font-size:1.8rem}
+.cert-benefit h4{color:var(--gold);margin-bottom:4px;font-size:1rem}
+.cert-benefit p{color:rgba(255,255,255,.65);font-size:.85rem;line-height:1.6}
+.cert-card{background:var(--white);border-radius:20px;padding:36px;border:3px solid var(--gold);position:relative}
+.cert-inner{border:1px solid rgba(201,137,58,.3);border-radius:14px;padding:28px}
+.cert-logo{font-family:'Playfair Display',serif;color:var(--wood-dark);font-size:1.4rem;text-align:center;margin-bottom:16px}
+.cert-divider{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px 0}
+.cert-title{text-align:center;font-size:.75rem;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.cert-name{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--wood-dark);text-align:center;margin-bottom:4px}
+.cert-course{text-align:center;color:var(--wood-warm);font-size:.9rem;margin-bottom:20px}
+.cert-seals{display:flex;justify-content:space-around}
+.cert-seal{width:60px;height:60px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(201,137,58,.08)}
+#narx{padding:80px 5%;background:var(--wood-dark)}
+#narx h2.section-title{color:var(--cream)}
+#narx .section-label{color:var(--gold)}
+#narx .section-sub{color:rgba(255,255,255,.6)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.price-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:36px 28px;position:relative;transition:transform .25s,box-shadow .25s}
+.price-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.3)}
+.price-card.featured{border-color:var(--gold);background:rgba(201,137,58,.1)}
+.featured-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--white);padding:5px 18px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.plan-name{color:rgba(255,255,255,.7);font-size:.85rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
+.plan-price{font-family:'Playfair Display',serif;font-size:2rem;color:var(--white);margin-bottom:4px}
+.plan-price span{font-size:.9rem;font-weight:400;color:rgba(255,255,255,.5)}
+.plan-features{list-style:none;margin:24px 0;display:flex;flex-direction:column;gap:10px}
+.plan-features li{color:rgba(255,255,255,.75);font-size:.88rem;display:flex;gap:10px;align-items:flex-start}
+.plan-features li::before{content:"✓";color:var(--gold);font-weight:700;flex-shrink:0}
+#faq{padding:80px 5%;background:var(--white)}
+.faq-list{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{border:1px solid rgba(44,24,16,.12);border-radius:12px;overflow:hidden}
+.faq-q{width:100%;background:none;border:none;text-align:left;padding:20px 24px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;color:var(--wood-dark);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.faq-q:hover{background:var(--cream)}
+.faq-icon{color:var(--gold);font-size:1.4rem;font-weight:300;transition:transform .3s;flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-a-inner{padding:0 24px 20px;color:#666;line-height:1.7;font-size:.9rem}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-item.open .faq-a{max-height:300px}
+#cta-section{padding:100px 5%;background:linear-gradient(135deg,var(--wood-warm),var(--wood-dark));text-align:center;color:var(--white)}
+#cta-section h2{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:16px}
+#cta-section p{color:rgba(255,255,255,.75);max-width:560px;margin:0 auto 36px;font-size:1rem;line-height:1.7}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+footer{background:#1a0d08;padding:60px 5% 24px;color:rgba(255,255,255,.7)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:48px;margin-bottom:48px}
+.footer-brand p{font-size:.85rem;line-height:1.7;margin-top:12px;font-weight:300}
+.footer-col h4{color:var(--white);font-size:.95rem;margin-bottom:16px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;transition:color .2s}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+.footer-bottom p{font-size:.82rem}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:rgba(255,255,255,.5);font-size:.8rem;text-decoration:none}
+.footer-links a:hover{color:var(--gold)}
+#scroll-top{position:fixed;bottom:32px;right:32px;width:46px;height:46px;background:var(--gold);color:var(--white);border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(201,137,58,.4);transition:all .25s;z-index:998}
+#scroll-top:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(201,137,58,.5)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:40px;width:90%;max-width:480px;position:relative}
+.modal h3{font-size:1.5rem;color:var(--wood-dark);margin-bottom:6px}
+.modal p{color:#888;font-size:.9rem;margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:#888;line-height:1}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--wood-dark);margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:12px 16px;border:2px solid rgba(44,24,16,.12);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;background:var(--white)}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold)}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:1024px){
+.curriculum-grid,.cert-grid,.workshop-grid{grid-template-columns:1fr}
+.pricing-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}
+.hero-right{display:none}
+.footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+.nav-links{display:none;flex-direction:column;position:absolute;top:73px;left:0;width:100%;background:var(--wood-dark);padding:20px 5%;gap:16px}
+.nav-links.open{display:flex}
+.hamburger{display:flex}
+#hero{flex-direction:column;text-align:center;padding:110px 5% 60px}
+.hero-btns,.hero-stats{justify-content:center}
+.tools-grid{grid-template-columns:1fr}
+.mentors-grid{grid-template-columns:1fr 1fr}
+.footer-grid{grid-template-columns:1fr}
+.courses-grid{grid-template-columns:1fr}
+.footer-bottom{flex-direction:column;gap:12px;text-align:center}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero-content>*{animation:fadeUp .7s ease forwards;opacity:0}
+.hero-content .badge{animation-delay:.1s}
+.hero-content h1{animation-delay:.25s}
+.hero-content .hero-desc{animation-delay:.4s}
+.hero-content .hero-btns{animation-delay:.55s}
+.hero-content .hero-stats{animation-delay:.7s}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">🪵 MebelAkademiya</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#kurslar">Kurslar</a></li>
+      <li><a href="#dastur">O'quv Dasturi</a></li>
+      <li><a href="#ustaxona">Ustaxona</a></li>
+      <li><a href="#oqituvchilar">Ustalar</a></li>
+      <li><a href="#narx">Narxlar</a></li>
+      <li><button class="btn btn-gold" onclick="openModal()">Ro'yxatdan o'tish</button></li>
+    </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-content">
+    <div class="badge">🏆 O'zbekistondagi #1 Mebel Akademiyasi</div>
+    <h1 class="hero-title">Mebel Ustasi<br><span>Bo'lib Chiqing</span></h1>
+    <p class="hero-desc">Klassik mebeldan zamonaviy dizayngacha — professional ustalarda o'rganing, sertifikat oling va karyerangizni boshlang.</p>
+    <div class="hero-btns">
+      <a href="#kurslar" class="btn btn-gold">Kurslarni ko'rish →</a>
+      <a href="#dastur" class="btn btn-outline">Dastur haqida</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">1,240+</div><div class="stat-label">Bitiruvchilar</div></div>
+      <div class="stat-item"><div class="stat-num">38</div><div class="stat-label">Kurslar</div></div>
+      <div class="stat-item"><div class="stat-num">97%</div><div class="stat-label">Ish topganlar</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="wood-card"><div class="wood-dot" style="background:linear-gradient(135deg,#5D3A1A,#8B5E3C)"></div><div class="wood-info"><h4>Eman Yog'ochi</h4><p>Bardoshli, klassik dizayn</p></div></div>
+    <div class="wood-card"><div class="wood-dot" style="background:linear-gradient(135deg,#C19A6B,#DEB887)"></div><div class="wood-info"><h4>Qarag'ay</h4><p>Engil, qulay ishlash</p></div></div>
+    <div class="wood-card"><div class="wood-dot" style="background:linear-gradient(135deg,#3D2B1F,#6B4226)"></div><div class="wood-info"><h4>Yong'oq</h4><p>Noyob naqsh, premium</p></div></div>
+    <div class="wood-card"><div class="wood-dot" style="background:linear-gradient(135deg,#E8C99A,#F5DEB3)"></div><div class="wood-info"><h4>Qayin</h4><p>Iqtisodiy, silliq</p></div></div>
+  </div>
+</section>
+
+<section id="kurslar">
+  <div class="section-label">Ta'lim</div>
+  <h2 class="section-title">Kurslarimiz</h2>
+  <p class="section-sub">Boshlang'ichdan professionalga qadar — har qadamda sizni qo'llab-quvvatlaymiz.</p>
+  <div class="filter-wrap" id="filterWrap"></div>
+  <div class="courses-grid" id="coursesGrid"></div>
+</section>
+
+<section id="dastur">
+  <div class="section-label">Mazmun</div>
+  <h2 class="section-title">O'quv Dasturi</h2>
+  <p class="section-sub">Tizimli va amaliy — har bir modul real natijaga yo'naltirilgan.</p>
+  <div class="curriculum-grid">
+    <div class="module-list" id="moduleList"></div>
+    <div class="module-detail" id="moduleDetail"></div>
+  </div>
+</section>
+
+<section id="ustaxona">
+  <div class="section-label">Amaliyot</div>
+  <h2 class="section-title">Ustaxonamiz</h2>
+  <p class="section-sub">Zamonaviy asbob-uskunalar bilan jihozlangan professional ustaxona.</p>
+  <div class="workshop-grid">
+    <div>
+      <div class="process-list">
+        <div class="process-step reveal"><div class="step-icon">📐</div><div class="step-info"><h4>O'lchash va Rejalashtirish</h4><p>Har bir mahsulot aniq o'lchov va chizmadan boshlanadi.</p></div></div>
+        <div class="process-step reveal"><div class="step-icon">🪚</div><div class="step-info"><h4>Kesish va Shakllantirish</h4><p>Zamonaviy arralar bilan aniq kesish texnikasi.</p></div></div>
+        <div class="process-step reveal"><div class="step-icon">🔩</div><div class="step-info"><h4>Birlashtirish va Yig'ish</h4><p>Mustahkam birlashtirish usullari va fitinglar.</p></div></div>
+        <div class="process-step reveal"><div class="step-icon">🎨</div><div class="step-info"><h4>Lak va Bezash</h4><p>Yakuniy ishlov berish — mahsulotni professional ko'rinish.</p></div></div>
+      </div>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card reveal"><div class="tool-emoji">🪚</div><h4>Tsirkulyar Arra</h4><p>Aniq va tez kesish uchun professional stanok.</p></div>
+      <div class="tool-card reveal"><div class="tool-emoji">🔧</div><h4>Frezer</h4><p>Naqsh va profil ishlash uchun.</p></div>
+      <div class="tool-card reveal"><div class="tool-emoji">⚡</div><h4>Elektr Arra</h4><p>Egri chiziqlarni kesish imkoniyati.</p></div>
+      <div class="tool-card reveal"><div class="tool-emoji">🔨</div><h4>Zubila To'plami</h4><p>Qo'l ishi va nozik detallarga.</p></div>
+      <div class="tool-card reveal"><div class="tool-emoji">📏</div><h4>Kombinatsion Gon</h4><p>Aniqlikni ta'minlovchi o'lchash asbobi.</p></div>
+      <div class="tool-card reveal"><div class="tool-emoji">💨</div><h4>Pnevmatik Qurilma</h4><p>Tez va sifatli yig'ishni ta'minlovchi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="oqituvchilar">
+  <div class="section-label">Jamoamiz</div>
+  <h2 class="section-title">Ustalarimiz</h2>
+  <p class="section-sub">Yillar davomida tajriba to'plagan, sohasining eng yaxshi mutaxassislari.</p>
+  <div class="mentors-grid">
+    <div class="mentor-card reveal"><div class="mentor-avatar" style="background:linear-gradient(135deg,#A0522D,#6B3A2A)">👨‍🔧</div><h3 class="mentor-name">Akbar Toshmatov</h3><p class="mentor-role">Klassik Mebel Ustasi</p><p class="mentor-exp">25 yil tajriba</p><div class="mentor-rating">⭐ 4.9</div></div>
+    <div class="mentor-card reveal"><div class="mentor-avatar" style="background:linear-gradient(135deg,#C9893A,#8B5E3C)">👩‍🎨</div><h3 class="mentor-name">Malika Yusupova</h3><p class="mentor-role">Mebel Dizayneri</p><p class="mentor-exp">Magistr darajasi</p><div class="mentor-rating">⭐ 4.8</div></div>
+    <div class="mentor-card reveal"><div class="mentor-avatar" style="background:linear-gradient(135deg,#5D3A1A,#3D2B1F)">👨‍💼</div><h3 class="mentor-name">Jasur Rahimov</h3><p class="mentor-role">CNC Mutaxassisi</p><p class="mentor-exp">15 yil tajriba</p><div class="mentor-rating">⭐ 4.9</div></div>
+    <div class="mentor-card reveal"><div class="mentor-avatar" style="background:linear-gradient(135deg,#8B5E3C,#C19A6B)">🧑‍🏭</div><h3 class="mentor-name">Bobur Nazarov</h3><p class="mentor-role">Restoratsiya Ustasi</p><p class="mentor-exp">10 yil tajriba</p><div class="mentor-rating">⭐ 4.7</div></div>
+  </div>
+</section>
+
+<section id="sertifikat">
+  <div class="section-label">Hujjat</div>
+  <h2 class="section-title">Sertifikat</h2>
+  <p class="section-sub">Kursni muvaffaqiyatli tugatganingizdan so'ng rasmiy sertifikat olasiz.</p>
+  <div class="cert-grid">
+    <div class="cert-benefits">
+      <div class="cert-benefit reveal"><div class="cert-benefit-icon">✅</div><div><h4>Davlat Tan Olgan</h4><p>Sertifikatimiz O'zbekiston hukumati tomonidan rasman tan olingan.</p></div></div>
+      <div class="cert-benefit reveal"><div class="cert-benefit-icon">🔗</div><div><h4>Digital QR Kod</h4><p>Har bir sertifikatda tekshirish mumkin bo'lgan QR kod mavjud.</p></div></div>
+      <div class="cert-benefit reveal"><div class="cert-benefit-icon">📈</div><div><h4>Karyera Imkoniyati</h4><p>Sertifikat yordamida ish topish va maosh oshirish imkoniyati.</p></div></div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-inner">
+        <div class="cert-logo">🪵 MebelAkademiya</div>
+        <div class="cert-divider"></div>
+        <p class="cert-title">Tugatganlik Sertifikati</p>
+        <p class="cert-name">Abdullayev Jasur</p>
+        <p class="cert-course">Klassik Kreslo Yasash kursi</p>
+        <div class="cert-seals">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-seal">✔️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="narx">
+  <div class="section-label">Reja</div>
+  <h2 class="section-title">Narxlar</h2>
+  <p class="section-sub">O'zingizga mos rejani tanlang va bugun boshlang.</p>
+  <div class="pricing-grid" id="pricingGrid"></div>
+</section>
+
+<section id="faq">
+  <div class="section-label">Savol-Javob</div>
+  <h2 class="section-title">Ko'p So'raladigan Savollar</h2>
+  <p class="section-sub">Bilmoqchi bo'lgan narsangizni toping.</p>
+  <div class="faq-list" id="faqList"></div>
+</section>
+
+<section id="cta-section">
+  <h2>Bugun Boshlashga<br>Tayyor Misiz?</h2>
+  <p>Minglab talabalar allaqachon karyeralarini o'zgartirdi. Keyingi navbat sizniki!</p>
+  <div class="cta-btns">
+    <button class="btn btn-gold" onclick="openModal()">Bepul sinov boshlash</button>
+    <a href="tel:+998901234567" class="btn btn-outline">📞 Qo'ng'iroq qilish</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="color:var(--white)">🪵 MebelAkademiya</div>
+      <p>O'zbekistondagi #1 mebel ishlab chiqarish maktabi. Professional ta'lim, amaliy mashg'ulotlar va sertifikat.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Kurslar</h4>
+      <ul>
+        <li><a href="#kurslar">Boshlang'ich</a></li>
+        <li><a href="#kurslar">Professional</a></li>
+        <li><a href="#kurslar">Dizayn</a></li>
+        <li><a href="#kurslar">Restoratsiya</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Akademiya</h4>
+      <ul>
+        <li><a href="#dastur">O'quv Dasturi</a></li>
+        <li><a href="#oqituvchilar">Ustalar</a></li>
+        <li><a href="#sertifikat">Sertifikat</a></li>
+        <li><a href="#narx">Narxlar</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Aloqa</h4>
+      <ul>
+        <li><a href="tel:+998901234567">+998 90 123 45 67</a></li>
+        <li><a href="mailto:info@mebelakademiya.uz">info@mebelakademiya.uz</a></li>
+        <li><a href="#">Toshkent, Chilonzor</a></li>
+        <li><a href="#">Du-Sha: 9:00 – 18:00</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 MebelAkademiya. Barcha huquqlar himoyalangan.</p>
+    <div class="footer-links">
+      <a href="#">Maxfiylik</a>
+      <a href="#">Shartlar</a>
+      <a href="#">Sitemap</a>
+    </div>
+  </div>
+</footer>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Ro'yxatdan O'ting</h3>
+    <p>Bepul sinov darsiga yozilish uchun ma'lumotlarni kiriting.</p>
+    <form onsubmit="submitForm(event)">
+      <div class="form-group"><label>Ismingiz</label><input type="text" placeholder="To'liq ismingiz" required></div>
+      <div class="form-group"><label>Telefon raqam</label><input type="tel" placeholder="+998 90 000 00 00" required></div>
+      <div class="form-group"><label>Kurs tanlang</label>
+        <select>
+          <option>Klassik Kreslo Yasash</option>
+          <option>Divan va Matros</option>
+          <option>Mebel Dizayni AutoCAD</option>
+          <option>Mebel Restoratsiyasi</option>
+          <option>CNC Mashinasi</option>
+          <option>Oshxona Mebeli</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-gold" style="width:100%;padding:14px;font-size:1rem;border-radius:10px">Yuborish →</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const COURSES=[
+  {emoji:"🪑",title:"Klassik Kreslo Yasash",cat:"boshlangich",level:"Boshlang'ich",levelColor:"#2a7a4b",bg:"linear-gradient(135deg,#5D3A1A,#A0522D)",hours:24,lessons:18,rating:4.9,price:"Bepul",priceClass:"free"},
+  {emoji:"🛋️",title:"Divan va Matros",cat:"professional",level:"Professional",levelColor:"#7a2a2a",bg:"linear-gradient(135deg,#2C1810,#6B3A2A)",hours:48,lessons:36,rating:4.8,price:"350,000 so'm",priceClass:""},
+  {emoji:"🎨",title:"Mebel Dizayni AutoCAD",cat:"dizayn",level:"O'rta",levelColor:"#7a5a2a",bg:"linear-gradient(135deg,#8B5E3C,#C9893A)",hours:32,lessons:24,rating:4.7,price:"250,000 so'm",priceClass:""},
+  {emoji:"🔧",title:"Mebel Restoratsiyasi",cat:"restoratsiya",level:"Boshlang'ich",levelColor:"#2a7a4b",bg:"linear-gradient(135deg,#3D2B1F,#6B4226)",hours:20,lessons:15,rating:4.9,price:"Bepul",priceClass:"free"},
+  {emoji:"⚙️",title:"CNC Mashinasi Bilan Ishlash",cat:"professional",level:"Professional",levelColor:"#7a2a2a",bg:"linear-gradient(135deg,#1a0d08,#4a2010)",hours:60,lessons:42,rating:4.8,price:"600,000 so'm",priceClass:""},
+  {emoji:"🏡",title:"Oshxona Mebeli Kompleksi",cat:"dizayn",level:"O'rta",levelColor:"#7a5a2a",bg:"linear-gradient(135deg,#6B3A2A,#A0522D)",hours:40,lessons:28,rating:4.6,price:"400,000 so'm",priceClass:""}
+];
+
+const MODULES=[
+  {num:"01",title:"Yog'och Turlari va Materiallar",hours:12,topics:["Qattiq va yumshoq yog'och farqlari","Namlik va quritish jarayoni","Materiallar tanlash mezonlari","Sifat tekshirish usullari"],tools:["Namlık o'lchagich","Sirtni tekshirish"]},
+  {num:"02",title:"Asbob-Uskunalar Bilan Ishlash",hours:20,topics:["Qo'l asboblari xavfsizligi","Elektr asboblarni sozlash","Stanoklar bilan ishlash","Texnik xizmat ko'rsatish"],tools:["Tsirkulyar arra","Frezer","Elektr arra","Zubila"]},
+  {num:"03",title:"O'lchash va Chizma",hours:16,topics:["AutoCAD asosları","Texnik chizma o'qish","O'lchov aniqlik darajasi","3D modellashtirish kirish"],tools:["AutoCAD","Ruletkа","Kombinatsion gon"]},
+  {num:"04",title:"Birlashtirish Texnikalari",hours:28,topics:["Shipa va tenon ulanish","Domino birlashtirish","Yelim va mañkur ishlatish","Konstruktiv mustahkamlik"],tools:["Yelim press","Domino aparati","Bolt va vint to'plami"]},
+  {num:"05",title:"Lak va Yuzakovlash",hours:18,topics:["Yuzani tayyorlash — zımpara","Bo'yoq va morila qo'llash","Lak qatlamlari va quritish","Sifat nazorat usullari"],tools:["Frezer","Zımpara mashinasi","Sprey piston","Yuvgich"]},
+  {num:"06",title:"Loyiha — Real Mebel Yasash",hours:40,topics:["Loyiha tanlov va rejalashtirish","Barcha bosqichlarni o'z ichiga olish","Sifat nazorat va test","Taqdimot va baholash"],tools:["Barcha asboblar","AutoCAD","Kamera (hujjatlashtirish)"]}
+];
+
+const PLANS=[
+  {name:"Starter",price:"350,000",period:"oy",features:["5 ta asosiy kurs","Video darslar + PDF","Jamiyat forumi","Boshlang'ich sertifikat"],featured:false},
+  {name:"Professional",price:"850,000",period:"oy",features:["Barcha kurslar","Ustaxona (haftada 2 marta)","Shaxsiy mentor","Professional sertifikat","Ish topishda yordam"],featured:true},
+  {name:"Biznes",price:"1,800,000",period:"oy",features:["10 ta litsenziya","Maxsus korporativ kurslar","Guruh mentoring","Analytics panel"],featured:false}
+];
+
+const FAQS=[
+  {q:"Tajribasiz qo'shila olamanmi?",a:"Ha, albatta! Bizning boshlang'ich kurslar noldan boshlab o'rgatadi. Hech qanday oldingi tajriba talab qilinmaydi."},
+  {q:"Ustaxona vaqtlari qanday?",a:"Ustaxona dushanba-shanba kunlari soat 8:00 dan 20:00 gacha ochiq. Professional reja o'quvchilari haftada 2 marta ixtiyoriy seans oladi."},
+  {q:"Sertifikat qayerda amal qiladi?",a:"Sertifikatimiz O'zbekiston hukumati tomonidan tan olingan va bir qator xorij mamlakatlarida ham qabul qilinadi."},
+  {q:"Kurslar onlayn ham bormi?",a:"Ha, barcha kurslar onlayn formatda ham mavjud. Ustaxona mashg'ulotlari esa faqat offline (Toshkent shahri)."},
+  {q:"Ish topishda yordam berasizlarmi?",a:"Professional va Biznes reja o'quvchilariga ish o'rinlari ma'lumot bazasi, CV yozish va suhbatga tayyorgarlik yordami beramiz."},
+  {q:"To'lov usullari qanday?",a:"Click, Payme, bank o'tkazmasi va naqd pul orqali to'lash mumkin. Oyma-oy to'lov imkoniyati ham mavjud."}
+];
+
+// Render courses
+function renderCourses(filter='all'){
+  const grid=document.getElementById('coursesGrid');
+  const filtered=filter==='all'?COURSES:COURSES.filter(c=>c.cat===filter);
+  grid.innerHTML=filtered.map(c=>`
+    <div class="course-card reveal">
+      <div class="course-img" style="background:${c.bg}">${c.emoji}</div>
+      <div class="course-body">
+        <span class="level-badge" style="background:${c.levelColor}22;color:${c.levelColor}">${c.level}</span>
+        <h3 class="course-title">${c.title}</h3>
+        <div class="course-meta">
+          <span>⏱ ${c.hours} soat</span>
+          <span>📚 ${c.lessons} dars</span>
+          <span>⭐ ${c.rating}</span>
+        </div>
+        <div class="course-footer">
+          <span class="course-price ${c.priceClass}">${c.price}</span>
+          <button class="btn btn-gold" onclick="openModal()">Yozilish</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  observeReveal();
+}
+
+// Filters
+const filters=[{id:'all',label:'Barchasi'},{id:'boshlangich',label:"Boshlang'ich"},{id:'professional',label:'Professional'},{id:'dizayn',label:'Dizayn'},{id:'restoratsiya',label:'Restoratsiya'}];
+document.getElementById('filterWrap').innerHTML=filters.map(f=>`<button class="filter-btn ${f.id==='all'?'active':''}" onclick="applyFilter('${f.id}',this)">${f.label}</button>`).join('');
+
+function applyFilter(id,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCourses(id);
+}
+renderCourses();
+
+// Modules
+let activeModule=0;
+function renderModules(){
+  document.getElementById('moduleList').innerHTML=MODULES.map((m,i)=>`
+    <div class="module-item ${i===activeModule?'active':''}" onclick="selectModule(${i})">
+      <div class="module-num">${m.num}</div>
+      <div class="module-title">${m.title}</div>
+      <div class="module-hours">${m.hours} soat</div>
+    </div>
+  `).join('');
+  const m=MODULES[activeModule];
+  document.getElementById('moduleDetail').innerHTML=`
+    <h3>${m.title}</h3>
+    <div class="hours-badge">⏱ ${m.hours} soat</div>
+    <ul>${m.topics.map(t=>`<li>${t}</li>`).join('')}</ul>
+    <p style="color:var(--gold);font-size:.8rem;margin-bottom:10px;font-weight:600">ASBOBLAR:</p>
+    <div class="tools-wrap">${m.tools.map(t=>`<span class="tool-tag">${t}</span>`).join('')}</div>
+  `;
+}
+function selectModule(i){activeModule=i;renderModules();}
+renderModules();
+
+// Pricing
+document.getElementById('pricingGrid').innerHTML=PLANS.map(p=>`
+  <div class="price-card ${p.featured?'featured':''}">
+    ${p.featured?'<div class="featured-badge">💎 Mashhur</div>':''}
+    <div class="plan-name">${p.name}</div>
+    <div class="plan-price">${p.price} so'm<span> /${p.period}</span></div>
+    <ul class="plan-features">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+    <button class="btn btn-gold" style="width:100%" onclick="openModal()">Boshlash</button>
+  </div>
+`).join('');
+
+// FAQ
+document.getElementById('faqList').innerHTML=FAQS.map((f,i)=>`
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(${i})">
+      ${f.q}<span class="faq-icon">+</span>
+    </button>
+    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
+  </div>
+`).join('');
+
+function toggleFaq(i){
+  const items=document.querySelectorAll('.faq-item');
+  items.forEach((item,idx)=>{
+    if(idx===i){item.classList.toggle('open')}
+    else{item.classList.remove('open')}
+  });
+}
+
+// Scroll
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY;
+  const h=document.body.scrollHeight-window.innerHeight;
+  document.getElementById('progress-bar').style.width=(s/h*100)+'%';
+  document.getElementById('navbar').classList.toggle('scrolled',s>20);
+  const st=document.getElementById('scroll-top');
+  st.style.display=s>400?'flex':'none';
+});
+
+// Reveal
+function observeReveal(){
+  const els=document.querySelectorAll('.reveal:not(.visible)');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+  },{threshold:.15});
+  els.forEach(el=>io.observe(el));
+}
+observeReveal();
+
+// Modal
+function openModal(){document.getElementById('modalOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+function submitForm(e){e.preventDefault();closeModal();alert("✅ Ro'yxatdan o'tdingiz! Tez orada siz bilan bog'lanamiz.");}
+
+// Hamburger
+function toggleMenu(){
+  document.getElementById('navLinks').classList.toggle('open');
+}
+</script>
+</body>
+</html>
