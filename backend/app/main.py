@@ -7,34 +7,34 @@ from app.routers import auth, courses, public, enrollments, admin, payments
 # Create tables (for dev; use Alembic for production)
 Base.metadata.create_all(bind=engine)
 
-from sqlalchemy.orm import Session
-from app.database import SessionLocal
-from app import models
-from app.auth import hash_password
-
-db = SessionLocal()
-try:
-    admin = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
-    if not admin:
-        admin = models.User(
-            name="MebelAkademiya Admin",
-            email="admin@mebelakademiya.uz",
-            role=models.UserRole.admin,
-        )
-        db.add(admin)
-    admin.phone = "+998889884848"
-    admin.password_hash = hash_password("Grant2tatu")
-    db.commit()
-except Exception as e:
-    pass
-finally:
-    db.close()
-
 app = FastAPI(
     title="MebelAkademiya API",
     version="1.0.0",
     description="O'zbekistondagi #1 Mebel Akademiyasi backend API",
 )
+
+@app.on_event("startup")
+def startup_event():
+    from app.database import SessionLocal
+    from app import models
+    from app.auth import hash_password
+    db = SessionLocal()
+    try:
+        admin = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
+        if not admin:
+            admin = models.User(
+                name="MebelAkademiya Admin",
+                email="admin@mebelakademiya.uz",
+                role=models.UserRole.admin,
+            )
+            db.add(admin)
+        admin.phone = "+998889884848"
+        admin.password_hash = hash_password("Grant2tatu")
+        db.commit()
+    except Exception as e:
+        print(f"Startup admin setup error: {e}")
+    finally:
+        db.close()
 
 app.add_middleware(
     CORSMiddleware,
