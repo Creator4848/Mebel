@@ -3,8 +3,14 @@ const API_URL = typeof window === 'undefined' ? "https://mebel-backend.railway.a
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, options);
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Xato yuz berdi' }));
-    throw new Error(err.detail || 'Xato yuz berdi');
+    let detail = 'Xato yuz berdi';
+    try {
+      const err = await res.json();
+      detail = err.detail || detail;
+    } catch (e) {
+      detail = `Server xatosi (${res.status})`;
+    }
+    throw new Error(detail);
   }
   return res.json();
 }
