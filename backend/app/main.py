@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from backend.app.routers from app.routers import auth, courses, public, enrollments, admin, payments
+from app.routers import auth, courses, public, enrollments, admin, payments
 
 app = FastAPI(
     title="MebelAkademiya API",
@@ -13,7 +13,7 @@ app = FastAPI(
 def startup_event():
     try:
         from app.database import Base, engine, SessionLocal
-        from backend.app from app import models
+        from app import models
         from app.auth import hash_password
         
         # Create tables
