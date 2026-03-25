@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from _app.config import settings
+from app.config import settings
 
 # Handle SQLAlchemy 1.4+ posgres:// vs postgresql:// scheme requirements
 db_url = settings.DATABASE_URL

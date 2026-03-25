@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
-from _app import models, schemas
-from _app.database import get_db
+from app import models, schemas
+from app.database import get_db
 
 router = APIRouter(tags=["public"])
 
