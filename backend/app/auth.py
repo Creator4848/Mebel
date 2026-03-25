@@ -45,3 +45,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise credentials_exception
     return user
+
+def require_admin(current_user: models.User = Depends(get_current_user)):
+    # models.UserRole is an enum. Compare with admin.
+    if current_user.role != models.UserRole.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Bu amalni bajarish uchun admin huquqi tayinlangan bo'lishi shart"
+        )
+    return current_user
