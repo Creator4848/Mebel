@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = typeof window === 'undefined' ? "https://mebel-backend.railway.app" : '/api';
 
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, options);
