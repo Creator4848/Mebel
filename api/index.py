@@ -3,76 +3,13 @@ import sys
 import traceback
 import json
 
-# Ensure the api directory is in the path
-api_dir = os.path.dirname(os.path.abspath(__file__))
-if api_dir not in sys.path:
-    sys.path.insert(0, api_dir)
+# Add the root directory to the Python path
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
 
 try:
-    from fastapi import FastAPI
-    from fastapi.middleware.cors import CORSMiddleware
-    from config import settings
-    import auth, courses, public, enrollments, admin, payments
-
-    # Internal FastAPI instance
-    _app = FastAPI(
-        title="MebelAkademiya API",
-        version="1.0.0",
-        description="O'zbekistondagi #1 Mebel Akademiyasi backend API",
-    )
-
-    @_app.on_event("startup")
-    def startup_event():
-        try:
-            from database import Base, engine, SessionLocal
-            import models
-            from auth import hash_password
-            
-            # Create tables
-            Base.metadata.create_all(bind=engine)
-            
-            # Setup default admin
-            db = SessionLocal()
-            try:
-                admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
-                if not admin_user:
-                    admin_user = models.User(
-                        name="MebelAkademiya Admin",
-                        email="admin@mebelakademiya.uz",
-                        role=models.UserRole.admin,
-                    )
-                    db.add(admin_user)
-                admin_user.phone = "+998889884848"
-                admin_user.password_hash = hash_password("Grant2tatu")
-                db.commit()
-            finally:
-                db.close()
-        except Exception as e:
-            print(f"Startup error: {e}")
-
-    _app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-    # Include all routers
-    _app.include_router(auth.router)
-    _app.include_router(courses.router)
-    _app.include_router(public.router)
-    _app.include_router(enrollments.router)
-    _app.include_router(admin.router)
-    _app.include_router(payments.router)
-
-    @_app.get("/", tags=["root"])
-    def root():
-        return {"message": "MebelAkademiya API ishlayapti ✅"}
-
-    @_app.get("/health", tags=["root"])
-    def health():
-        return {"status": "ok", "env_vars": {"DB": bool(settings.DATABASE_URL)}}
+    from backend.app.main import app as _app
 
     # The exported ASGI handler for Vercel
     async def app(scope, receive, send):
@@ -91,7 +28,7 @@ try:
             else:
                 await _app(scope, receive, send)
         except Exception as e:
-            # Reveal the TRUTH in the browser
+            # THIS IS THE TRUTH-SEEKER: Return the real error to the browser
             error_response = {
                 "error": "RUNTIME_CRASH",
                 "exception": str(e),
