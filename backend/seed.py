@@ -13,17 +13,18 @@ models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
 # ─── Admin user ───────────────────────────────────────────────────────
-admin_exists = db.query(models.User).filter(models.User.phone == "+998901234567").first()
-if not admin_exists:
+admin = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
+if not admin:
     admin = models.User(
         name="MebelAkademiya Admin",
-        phone="+998901234567",
         email="admin@mebelakademiya.uz",
-        password_hash=hash_password("admin123"),
         role=models.UserRole.admin,
     )
     db.add(admin)
-    print("✅ Admin yaratildi: +998901234567 / admin123")
+
+admin.phone = "+998889884848"
+admin.password_hash = hash_password("Grant2tatu")
+print("✅ Admin ma'lumotlari yangilandi: +998889884848 / Grant2tatu")
 
 # ─── Courses ──────────────────────────────────────────────────────────
 courses_data = [
