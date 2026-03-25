@@ -1,14 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  rewrites: async () => {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/',
-      },
-    ];
-  },
+  /* webpack, env, or other Next.js settings go here */
 };
 
 export default nextConfig;
