@@ -2,15 +2,19 @@ import os
 import sys
 import traceback
 
-# Add the root directory to the Python path
-root_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.join(root_dir, '..')
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+# Add the api directory to the Python path so 'import app' works
+# even when 'app' is inside the 'api' folder.
+api_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.join(api_dir, '..')
+
+if api_dir not in sys.path:
+    sys.path.insert(0, api_dir)
+if project_root not in sys.path:
+    sys.path.insert(1, project_root)
 
 try:
-    # Now that 'app' is at root, this import should be effortless
-    from backend_app.main import app as _app
+    # This will now find api/app/main.py as 'app.main'
+    from app.main import app as _app
 
     # Vercel sends the full path including /api. We intercept the ASGI request
     # and strip the /api prefix so FastAPI's internal routing matches correctly.
