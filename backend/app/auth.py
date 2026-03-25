@@ -1,42 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from datetime import datetime, timedelta
+from typing import Optional
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from app import models, schemas
-from app.auth import hash_password, verify_password, create_access_token, get_current_user
+from app.config import settings
 from app.database import get_db
+from app import models
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
-@router.post("/register", response_model=schemas.Token, status_code=status.HTTP_201_CREATED)
-def register(data: schemas.UserRegister, db: Session = Depends(get_db)):
-    if db.query(models.User).filter(models.User.phone == data.phone).first():
-        raise HTTPException(status_code=400, detail="Bu telefon raqam allaqachon ro'yxatdan o'tgan")
-    if data.email and db.query(models.User).filter(models.User.email == data.email).first():
-        raise HTTPException(status_code=400, detail="Bu email allaqachon ro'yxatdan o'tgan")
-    user = models.User(
-        name=data.name,
-        phone=data.phone,
-        email=data.email or None,
-        password_hash=hash_password(data.password),
+def hash_password(password):
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Tasdiqlanmagan foydalanuvchi ma'lumotlari",
+        headers={"WWW-Authenticate": "Bearer"},
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "user": user}
-
-
-@router.post("/login", response_model=schemas.Token)
-def login(data: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.phone == data.phone).first()
-    if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Telefon raqam yoki parol noto'g'ri")
-    if not user.is_active:
-        raise HTTPException(status_code=403, detail="Hisob bloklangan")
-    token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "user": user}
-
-
-@router.get("/me", response_model=schemas.UserOut)
-def get_me(current_user: models.User = Depends(get_current_user)):
-    return current_user
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    user = db.query(models.User).filter(models.User.id == int(user_id)).first()
+    if user is None:
+        raise credentials_exception
+    return user
