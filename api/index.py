@@ -10,7 +10,7 @@ if parent_dir not in sys.path:
 
 try:
     # Now that 'app' is at root, this import should be effortless
-    from app.main import app as _app
+    from backend_app.main import app as _app
 
     # Vercel sends the full path including /api. We intercept the ASGI request
     # and strip the /api prefix so FastAPI's internal routing matches correctly.
@@ -35,7 +35,7 @@ except Exception as e:
     from fastapi import FastAPI
     app = FastAPI()
     
-    @app.get("/{full_path:path}")
+    @backend_app.get("/{full_path:path}")
     async def diagnostic(full_path: str):
         return {
             "error": "Python backend failed to start with root structure",
