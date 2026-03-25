@@ -1,4 +1,12 @@
-const API_URL = typeof window === 'undefined' ? "https://mebel-backend.railway.app" : '/api';
+const getApiUrl = () => {
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  }
+  return '/api';
+};
+
+const API_URL = getApiUrl();
+
 
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, options);
