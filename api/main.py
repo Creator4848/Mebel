@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import settings
-from app.routers import auth, courses, public, enrollments, admin, payments
+from config import settings
+import auth, courses, public, enrollments, admin, payments
 
 app = FastAPI(
     title="MebelAkademiya API",
@@ -11,9 +11,9 @@ app = FastAPI(
 
 @app.on_event("startup")
 def startup_event():
-    from app.database import Base, engine, SessionLocal
-    from app import models
-    from app.auth import hash_password
+    from database import Base, engine, SessionLocal
+    import models
+    from auth import hash_password
     
     # Create tables safely
     try:
@@ -66,9 +66,9 @@ def health():
 
 @app.get("/force-admin", tags=["root"])
 def force_admin():
-    from app.database import SessionLocal, engine
-    from app import models
-    from app.auth import hash_password
+    from database import SessionLocal, engine
+    import models
+    from auth import hash_password
     import traceback
     
     db = SessionLocal()
@@ -94,9 +94,9 @@ def force_admin():
     finally:
         db.close()
 
-    from app.database import SessionLocal, engine
+    from database import SessionLocal, engine
     import sqlalchemy
-    from app.config import settings
+    from config import settings
     
     health_info = {
         "status": "ok", 

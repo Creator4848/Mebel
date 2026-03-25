@@ -5,9 +5,9 @@ Covers: Courses, Modules, Instructors, Plans, Users, Enrollments, Payments.
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from app import models, schemas
-from app.auth import require_admin
-from app.database import get_db
+import models, schemas
+from auth import require_admin
+from database import get_db
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

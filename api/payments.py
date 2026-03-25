@@ -5,9 +5,9 @@ Both providers call these endpoints to confirm/cancel transactions.
 import hashlib
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from app import models
-from app.config import settings
-from app.database import get_db
+import models
+from config import settings
+from database import get_db
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
