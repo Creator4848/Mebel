@@ -4,9 +4,6 @@ from app.config import settings
 from app.database import Base, engine
 from app.routers import auth, courses, public, enrollments, admin, payments
 
-# Create tables (for dev; use Alembic for production)
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(
     title="MebelAkademiya API",
     version="1.0.0",
@@ -15,9 +12,16 @@ app = FastAPI(
 
 @app.on_event("startup")
 def startup_event():
-    from app.database import SessionLocal
+    from app.database import Base, engine, SessionLocal
     from app import models
     from app.auth import hash_password
+    
+    # Create tables safely
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Database table creation error: {e}")
+        
     db = SessionLocal()
     try:
         admin = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
