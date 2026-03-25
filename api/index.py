@@ -3,13 +3,13 @@ import sys
 import traceback
 import json
 
-# Add the root directory to the Python path
-root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+# Add the api directory to path so _app resolves cleanly
+api_dir = os.path.dirname(os.path.abspath(__file__))
+if api_dir not in sys.path:
+    sys.path.insert(0, api_dir)
 
 try:
-    from backend.app.main import app as _app
+    from _app.main import app as _app
 
     # The exported ASGI handler for Vercel
     async def app(scope, receive, send):

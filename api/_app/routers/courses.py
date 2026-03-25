@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.app import models, schemas
-from backend.app.database import get_db
+from _app import models, schemas
+from _app.database import get_db
 
 router = APIRouter(prefix="/courses", tags=["courses"])
 
