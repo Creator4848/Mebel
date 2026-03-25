@@ -3,6 +3,8 @@ import { Course, Module, Instructor, Plan } from '@/lib/types';
 import CourseCard from '@/components/CourseCard';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getHomeData() {
   const [courses, modules, instructors, plans] = await Promise.allSettled([
     api.getCourses(), api.getModules(), api.getInstructors(), api.getPlans(),
