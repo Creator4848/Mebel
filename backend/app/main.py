@@ -62,4 +62,19 @@ def root():
 
 @app.get("/health", tags=["root"])
 def health():
-    return {"status": "ok"}
+    from app.database import SessionLocal, engine
+    import sqlalchemy
+    
+    health_info = {"status": "ok", "database": "unknown"}
+    
+    try:
+        # Try to connect and run a simple query
+        db = SessionLocal()
+        db.execute(sqlalchemy.text("SELECT 1"))
+        db.close()
+        health_info["database"] = "connected"
+    except Exception as e:
+        health_info["database"] = f"error: {str(e)}"
+        health_info["status"] = "error"
+        
+    return health_info
