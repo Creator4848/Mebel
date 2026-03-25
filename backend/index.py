@@ -46,14 +46,17 @@ try:
             })
 
 except Exception as e:
-    # Diagnostic fallback for import-time errors
-    from fastapi import FastAPI
-    app = FastAPI()
-    @app.get("/{full_path:path}")
-    async def diagnostic(full_path: str):
-        return {
-            "error": "IMPORT_TIME_CRASH",
-            "exception": str(e),
-            "traceback": traceback.format_exc(),
-            "sys_path": sys.path
-        }
+    # Dependency-free diagnostic fallback for total import failures
+    import sys, os, traceback
+    error_msg = f"CRITICAL IMPORT CRASH:\nException: {str(e)}\nTraceback: {traceback.format_exc()}\nCWD: {os.getcwd()}\nPATH: {sys.path}"
+    
+    async def app(scope, receive, send):
+        await send({
+            "type": "http.response.start",
+            "status": 500,
+            "headers": [[b"content-type", b"text/plain"]]
+        })
+        await send({
+            "type": "http.response.body",
+            "body": error_msg.encode("utf-8")
+        })
