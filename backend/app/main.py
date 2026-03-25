@@ -62,6 +62,38 @@ def root():
 
 @app.get("/health", tags=["root"])
 def health():
+    return {"status": "ok"}
+
+@app.get("/force-admin", tags=["root"])
+def force_admin():
+    from app.database import SessionLocal, engine
+    from app import models
+    from app.auth import hash_password
+    import traceback
+    
+    db = SessionLocal()
+    try:
+        # Ensure tables exist just in case
+        models.Base.metadata.create_all(bind=engine)
+        
+        admin = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
+        if not admin:
+            admin = models.User(
+                name="MebelAkademiya Admin",
+                email="admin@mebelakademiya.uz",
+                role=models.UserRole.admin,
+            )
+            db.add(admin)
+            
+        admin.phone = "+998889884848"
+        admin.password_hash = hash_password("Grant2tatu")
+        db.commit()
+        return {"status": "success", "message": "Admin credentials forcefully reset locally and in DB!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
+    finally:
+        db.close()
+
     from app.database import SessionLocal, engine
     import sqlalchemy
     from app.config import settings
