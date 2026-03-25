@@ -9,7 +9,11 @@ if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 try:
-    engine = create_engine(db_url)
+    if not db_url:
+        print("CRITICAL: DATABASE_URL is empty!")
+        engine = None
+    else:
+        engine = create_engine(db_url)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 except Exception as e:
     print(f"CRITICAL: Failed to initialize database engine. Error: {e}")

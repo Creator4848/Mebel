@@ -64,15 +64,26 @@ def root():
 def health():
     from app.database import SessionLocal, engine
     import sqlalchemy
+    from app.config import settings
     
-    health_info = {"status": "ok", "database": "unknown"}
+    health_info = {
+        "status": "ok", 
+        "database": "unknown", 
+        "config": {
+            "DATABASE_URL_SET": bool(settings.DATABASE_URL),
+            "SECRET_KEY_SET": settings.SECRET_KEY != "temporary-dev-key-for-startup"
+        }
+    }
     
     try:
-        # Try to connect and run a simple query
-        db = SessionLocal()
-        db.execute(sqlalchemy.text("SELECT 1"))
-        db.close()
-        health_info["database"] = "connected"
+        if not settings.DATABASE_URL:
+            health_info["database"] = "error: DATABASE_URL is empty"
+            health_info["status"] = "error"
+        else:
+            db = SessionLocal()
+            db.execute(sqlalchemy.text("SELECT 1"))
+            db.close()
+            health_info["database"] = "connected"
     except Exception as e:
         health_info["database"] = f"error: {str(e)}"
         health_info["status"] = "error"
