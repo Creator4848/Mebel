@@ -35,37 +35,41 @@ function CourseForm({ initial, onSave }: { initial?: Partial<Course>; onSave: (d
     const [d, setD] = useState({
         emoji: '📚', title: '', category: 'boshlangich', level: "Boshlang'ich",
         level_color: '#2a7a4b', bg_gradient: 'linear-gradient(135deg,#5D3A1A,#A0522D)',
-        hours: 0, lessons: 0, rating: 5.0, price: 0, description: '', ...initial,
+        hours: 0, lessons: 0, rating: 5.0, price: 0, description: '', youtube_link: '', ...initial,
     });
-    const F = ({ label, name, type = 'text', opts }: { label: string; name: string; type?: string; opts?: string[] }) => (
+
+    // Instead of a Component <F>, we use a function returning JSX to prevent unmounts/focus loss.
+    const renderField = (label: string, name: string, type = 'text', opts?: string[]) => (
         <div className="form-group">
             <label>{label}</label>
             {opts ? (
-                <select value={(d as any)[name]} onChange={e => setD({ ...d, [name]: e.target.value })}>
+                <select value={(d as any)[name] || ''} onChange={e => setD({ ...d, [name]: e.target.value })}>
                     {opts.map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
             ) : (
-                <input type={type} value={(d as any)[name]} onChange={e => setD({ ...d, [name]: type === 'number' ? +e.target.value : e.target.value })} />
+                <input type={type} value={(d as any)[name] || ''} onChange={e => setD({ ...d, [name]: type === 'number' ? +e.target.value : e.target.value })} />
             )}
         </div>
     );
+
     return (
         <form onSubmit={e => { e.preventDefault(); onSave(d); }}>
-            <F label="Emoji" name="emoji" />
-            <F label="Sarlavha" name="title" />
-            <F label="Kategoriya" name="category" opts={['boshlangich', 'professional', 'dizayn', 'restoratsiya']} />
-            <F label="Daraja" name="level" opts={["Boshlang'ich", "O'rta", "Professional"]} />
-            <F label="Daraja rangi" name="level_color" />
-            <F label="Fon gradienti" name="bg_gradient" />
+            {renderField('Emoji', 'emoji')}
+            {renderField('Sarlavha', 'title')}
+            {renderField('Kategoriya', 'category', 'text', ['boshlangich', 'professional', 'dizayn', 'restoratsiya'])}
+            {renderField('Daraja', 'level', 'text', ["Boshlang'ich", "O'rta", "Professional"])}
+            {renderField('Daraja rangi', 'level_color')}
+            {renderField('Fon gradienti', 'bg_gradient')}
+            {renderField('YouTube Video Linki', 'youtube_link')}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <F label="Soatlar" name="hours" type="number" />
-                <F label="Darslar" name="lessons" type="number" />
-                <F label="Reyting" name="rating" type="number" />
-                <F label="Narx (so'm, 0=bepul)" name="price" type="number" />
+                {renderField('Soatlar', 'hours', 'number')}
+                {renderField('Darslar', 'lessons', 'number')}
+                {renderField('Reyting', 'rating', 'number')}
+                {renderField("Narx (so'm, 0=bepul)", 'price', 'number')}
             </div>
             <div className="form-group">
                 <label>Tavsif</label>
-                <textarea value={d.description} onChange={e => setD({ ...d, description: e.target.value })} rows={3} style={{ width: '100%', padding: '12px 16px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 10, fontFamily: "'DM Sans', sans-serif", fontSize: '.9rem', resize: 'vertical' }} />
+                <textarea value={d.description || ''} onChange={e => setD({ ...d, description: e.target.value })} rows={3} style={{ width: '100%', padding: '12px 16px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 10, fontFamily: "'DM Sans', sans-serif", fontSize: '.9rem', resize: 'vertical' }} />
             </div>
             <button type="submit" className="btn btn-gold" style={{ width: '100%', padding: 14, borderRadius: 10 }}>Saqlash</button>
         </form>
@@ -75,18 +79,25 @@ function CourseForm({ initial, onSave }: { initial?: Partial<Course>; onSave: (d
 // ─── Instructor Form ──────────────────────────────────────────────────────────
 function InstructorForm({ initial, onSave }: { initial?: Partial<Instructor>; onSave: (data: object) => void }) {
     const [d, setD] = useState({ name: '', role: '', experience: '', rating: 5.0, emoji: '👨‍🏫', avatar_color: 'linear-gradient(135deg,#A0522D,#6B3A2A)', bio: '', ...initial });
-    const F = (label: string, name: string, type = 'text') => (
+
+    const renderField = (label: string, name: string, type = 'text') => (
         <div className="form-group">
             <label>{label}</label>
-            <input type={type} value={(d as any)[name]} onChange={e => setD({ ...d, [name]: type === 'number' ? +e.target.value : e.target.value })} />
+            <input type={type} value={(d as any)[name] || ''} onChange={e => setD({ ...d, [name]: type === 'number' ? +e.target.value : e.target.value })} />
         </div>
     );
+
     return (
         <form onSubmit={e => { e.preventDefault(); onSave(d); }}>
-            {F('Ism-familya', 'name')} {F('Lavozim', 'role')} {F('Tajriba', 'experience')}
-            {F('Reyting', 'rating', 'number')} {F('Emoji', 'emoji')} {F('Avatar rangi', 'avatar_color')}
-            <div className="form-group"><label>Bio</label>
-                <textarea value={d.bio} onChange={e => setD({ ...d, bio: e.target.value })} rows={2} style={{ width: '100%', padding: '12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 10, fontFamily: "'DM Sans', sans-serif", resize: 'vertical' }} />
+            {renderField('Ism-familya', 'name')}
+            {renderField('Lavozim', 'role')}
+            {renderField('Tajriba', 'experience')}
+            {renderField('Reyting', 'rating', 'number')}
+            {renderField('Emoji', 'emoji')}
+            {renderField('Avatar rangi', 'avatar_color')}
+            <div className="form-group">
+                <label>Bio</label>
+                <textarea value={d.bio || ''} onChange={e => setD({ ...d, bio: e.target.value })} rows={2} style={{ width: '100%', padding: '12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 10, fontFamily: "'DM Sans', sans-serif", resize: 'vertical' }} />
             </div>
             <button type="submit" className="btn btn-gold" style={{ width: '100%', padding: 14, borderRadius: 10 }}>Saqlash</button>
         </form>
@@ -128,24 +139,33 @@ function ModuleForm({ initial, onSave }: { initial?: Partial<Module>; onSave: (d
     const [d, setD] = useState({ order: 1, number: '01', title: '', hours: 0, topics: [] as string[], tools: [] as string[], ...initial });
     const [topicInput, setTopicInput] = useState('');
     const [toolInput, setToolInput] = useState('');
+
     const addItem = (field: 'topics' | 'tools', val: string, clear: () => void) => {
-        if (val.trim()) { setD({ ...d, [field]: [...d[field], val.trim()] }); clear(); }
+        if (val.trim()) { setD({ ...d, [field]: [...((d as any)[field] || []), val.trim()] }); clear(); }
     };
+
+    const renderField = (label: string, name: string, type = 'text') => (
+        <div className="form-group">
+            <label>{label}</label>
+            <input type={type} value={(d as any)[name] || ''} onChange={e => setD({ ...d, [name]: type === 'number' ? +e.target.value : e.target.value })} />
+        </div>
+    );
+
     return (
         <form onSubmit={e => { e.preventDefault(); onSave(d); }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div className="form-group"><label>Tartib #</label><input type="number" value={d.order} onChange={e => setD({ ...d, order: +e.target.value })} /></div>
-                <div className="form-group"><label>Raqam (01,02...)</label><input value={d.number} onChange={e => setD({ ...d, number: e.target.value })} /></div>
+                {renderField('Tartib #', 'order', 'number')}
+                {renderField('Raqam (01,02...)', 'number')}
             </div>
-            <div className="form-group"><label>Sarlavha</label><input value={d.title} onChange={e => setD({ ...d, title: e.target.value })} /></div>
-            <div className="form-group"><label>Soatlar</label><input type="number" value={d.hours} onChange={e => setD({ ...d, hours: +e.target.value })} /></div>
+            {renderField('Sarlavha', 'title')}
+            {renderField('Soatlar', 'hours', 'number')}
             <div className="form-group">
                 <label>Mavzular</label>
                 <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
                     <input value={topicInput} onChange={e => setTopicInput(e.target.value)} placeholder="Mavzu qo'shing" style={{ flex: 1, padding: '8px 12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 8, fontFamily: "'DM Sans', sans-serif" }} />
                     <button type="button" className="btn btn-gold" style={{ padding: '8px 16px' }} onClick={() => addItem('topics', topicInput, () => setTopicInput(''))}>+</button>
                 </div>
-                {d.topics.map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>• {t} <button type="button" onClick={() => setD({ ...d, topics: d.topics.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
+                {(d.topics || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>• {t} <button type="button" onClick={() => setD({ ...d, topics: d.topics.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
             </div>
             <div className="form-group">
                 <label>Asboblar</label>
@@ -153,7 +173,7 @@ function ModuleForm({ initial, onSave }: { initial?: Partial<Module>; onSave: (d
                     <input value={toolInput} onChange={e => setToolInput(e.target.value)} placeholder="Asbob qo'shing" style={{ flex: 1, padding: '8px 12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 8, fontFamily: "'DM Sans', sans-serif" }} />
                     <button type="button" className="btn btn-gold" style={{ padding: '8px 16px' }} onClick={() => addItem('tools', toolInput, () => setToolInput(''))}>+</button>
                 </div>
-                {d.tools.map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>🔧 {t} <button type="button" onClick={() => setD({ ...d, tools: d.tools.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
+                {(d.tools || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>🔧 {t} <button type="button" onClick={() => setD({ ...d, tools: d.tools.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
             </div>
             <button type="submit" className="btn btn-gold" style={{ width: '100%', padding: 14, borderRadius: 10 }}>Saqlash</button>
         </form>

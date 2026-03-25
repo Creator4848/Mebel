@@ -48,6 +48,7 @@ class Course(Base):
     rating = Column(Float, default=5.0)
     price = Column(Integer, default=0)  # 0 = free, in so'm
     description = Column(Text, nullable=True)
+    youtube_link = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     enrollments = relationship("Enrollment", back_populates="course")

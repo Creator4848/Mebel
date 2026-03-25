@@ -11,6 +11,7 @@ export interface Course {
     rating: number;
     price: number;
     description?: string;
+    youtube_link?: string;
     is_active: boolean;
     created_at: string;
 }

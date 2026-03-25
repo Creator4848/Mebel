@@ -43,6 +43,7 @@ class CourseBase(BaseModel):
     rating: float = 5.0
     price: int = 0
     description: Optional[str] = None
+    youtube_link: Optional[str] = None
 
 class CourseCreate(CourseBase):
     pass
