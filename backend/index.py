@@ -10,7 +10,20 @@ if backend_dir not in sys.path:
 import traceback
 
 try:
-    from app.main import app
+    from app.main import app as _app
+
+    # Vercel sends the full path including /api. We intercept the ASGI request
+    # and strip the /api prefix so FastAPI's internal routing matches correctly.
+    async def app(scope, receive, send):
+        if scope["type"] in ["http", "websocket"] and scope.get("path", "").startswith("/api"):
+            new_scope = dict(scope)
+            new_scope["path"] = scope["path"][4:] or "/"
+            if "raw_path" in scope:
+                new_scope["raw_path"] = new_scope["path"].encode("utf-8")
+            await _app(new_scope, receive, send)
+        else:
+            await _app(scope, receive, send)
+
 except Exception as e:
     # If the main app fails to import (e.g. missing dependencies, bad configuration),
     # we catch the error here and serve a dummy FastAPI app that returns the stack trace.
