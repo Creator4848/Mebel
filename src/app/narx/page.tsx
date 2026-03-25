@@ -1,11 +1,11 @@
-import { apiFetch } from '@/lib/api';
+import { api } from '@/lib/api';
 import Link from 'next/link';
 
 export const revalidate = 60;
 
 async function getPlans() {
     try {
-        return await apiFetch('/plans');
+        return await api.getPlans();
     } catch (e) {
         console.error('Failed to fetch plans:', e);
         return [];

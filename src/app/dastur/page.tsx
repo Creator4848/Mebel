@@ -1,10 +1,10 @@
-import { apiFetch } from '@/lib/api';
+import { api } from '@/lib/api';
 
 export const revalidate = 60;
 
 async function getModules() {
     try {
-        return await apiFetch('/modules');
+        return await api.getModules();
     } catch (e) {
         console.error('Failed to fetch modules:', e);
         return [];

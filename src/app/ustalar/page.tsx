@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import { apiFetch } from '@/lib/api';
+import { api } from '@/lib/api';
 
 export const revalidate = 60; // Revalidate every minute
 
 async function getInstructors() {
     try {
-        return await apiFetch('/instructors');
+        return await api.getInstructors();
     } catch (e) {
         console.error('Failed to fetch instructors:', e);
         return [];
