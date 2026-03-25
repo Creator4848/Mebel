@@ -16,12 +16,20 @@ def startup_event():
         from app import models
         from app.auth import hash_password
         
-        # Create tables
-        Base.metadata.create_all(bind=engine)
-        
-        # Setup default admin
-        db = SessionLocal()
-        try:
+            from app.database import Base, engine
+            # Create tables
+            Base.metadata.create_all(bind=engine)
+
+            # Manual migration check: Add youtube_link if missing
+            from sqlalchemy import text
+            try:
+                db.execute(text("SELECT youtube_link FROM courses LIMIT 1;"))
+            except Exception:
+                db.rollback()
+                print("Adding missing column youtube_link to courses...")
+                db.execute(text("ALTER TABLE courses ADD COLUMN youtube_link VARCHAR(500);"))
+                db.commit()
+
             admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
             if not admin_user:
                 admin_user = models.User(
