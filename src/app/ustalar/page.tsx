@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { Instructor } from '@/lib/types';
 
 export default function UstalarPage() {
-    const [instructors, setInstructors] = useState<any[]>([]);
+    const [instructors, setInstructors] = useState<Instructor[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,44 +22,54 @@ export default function UstalarPage() {
     }, []);
 
     return (
-        <main className="container view-animate pt-32 pb-24">
-            <div className="text-center mb-16">
-                <h1 className="text-4xl text-wood border-b-2 border-gold inline-block pb-2 mb-4 font-serif">
-                    Bizning Ustalar
-                </h1>
-                <p className="text-dark-brown max-w-2xl mx-auto opacity-80">
+        <main style={{ minHeight: '100vh', background: 'var(--cream)', padding: '120px 5% 80px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 64 }}>
+                <p className="section-label">Jamoamiz</p>
+                <h1 className="section-title">Bizning Ustalar</h1>
+                <p className="section-sub">
                     O'zbekistonning eng tajribali mebel ustalari bilan tanishing.
                     Ular o'zlarining ko'p yillik sir-asrorlarini siz bilan bo'lishishga tayyor.
                 </p>
             </div>
 
             {loading ? (
-                <div className="text-center py-20 text-wood">Yuklanmoqda...</div>
+                <div style={{ textAlign: 'center', padding: '60px 0', color: '#888', fontSize: '1.2rem' }}>
+                    Yuklanmoqda...
+                </div>
             ) : instructors.length === 0 ? (
-                <div className="text-center py-20 text-gray-500">
-                    <p>Hozircha ustalar qo'shilmagan.</p>
+                <div style={{ textAlign: 'center', padding: '60px 0', color: '#888', fontSize: '1.2rem', background: 'var(--white)', borderRadius: 16 }}>
+                    Hozircha ustalar qo'shilmagan.
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {instructors.map((usta: any) => (
-                        <div key={usta.id} className="bg-white rounded-xl shadow-lg border border-gold/20 overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
-                            <div className="aspect-square w-full bg-cream relative flex items-center justify-center text-6xl">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 32, maxWidth: 1200, margin: '0 auto' }}>
+                    {instructors.map((usta: Instructor) => (
+                        <div key={usta.id} className="card" style={{ padding: '40px 32px', textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{
+                                width: 90, height: 90, borderRadius: '50%', margin: '0 auto 24px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '2.5rem', background: usta.avatar_color || 'var(--gold)',
+                                boxShadow: '0 8px 24px rgba(201,137,58,0.2)'
+                            }}>
                                 {usta.emoji || '👨‍🔧'}
                             </div>
-                            <div className="p-6 flex-grow flex flex-col">
-                                <h3 className="text-2xl font-serif text-wood mb-1">{usta.name}</h3>
-                                <p className="text-gold font-medium mb-4">{usta.role}</p>
-                                <p className="text-dark-brown opacity-80 mb-4 flex-grow line-clamp-4">
-                                    {usta.bio}
-                                </p>
-                                <div className="border-t border-gold/20 pt-4 flex gap-4 text-sm text-dark-brown/70">
-                                    {usta.experience && (
-                                        <span><strong className="text-wood">{usta.experience}</strong> yil tajriba</span>
-                                    )}
-                                    {usta.rating > 0 && (
-                                        <span>⭐ {usta.rating} {usta.review_count > 0 && `(${usta.review_count})`}</span>
-                                    )}
-                                </div>
+                            <h3 style={{ color: 'var(--wood-dark)', fontSize: '1.3rem', marginBottom: 8 }}>{usta.name}</h3>
+                            <p style={{ color: 'var(--wood-warm)', fontSize: '.95rem', fontWeight: 600, marginBottom: 16 }}>{usta.role}</p>
+
+                            <p style={{ color: '#666', fontSize: '.9rem', lineHeight: 1.6, marginBottom: 24, flexGrow: 1 }}>
+                                {usta.bio || "Ushbu ustaning maxsus biografiyasi tez orada to'ldiriladi."}
+                            </p>
+
+                            <div style={{
+                                borderTop: '1px solid rgba(201,137,58,0.2)', paddingTop: 16,
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                fontSize: '.85rem'
+                            }}>
+                                <span style={{ color: '#888' }}>
+                                    <strong style={{ color: 'var(--wood-dark)' }}>{usta.experience || 'N/A'}</strong> tajriba
+                                </span>
+                                <span style={{ color: 'var(--gold)', fontWeight: 600 }}>
+                                    ⭐ {usta.rating || '5.0'}
+                                </span>
                             </div>
                         </div>
                     ))}
