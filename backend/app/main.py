@@ -15,13 +15,15 @@ def startup_event():
         from app.database import Base, engine, SessionLocal
         from app import models
         from app.auth import hash_password
+        from sqlalchemy import text
         
-            from app.database import Base, engine
-            # Create tables
-            Base.metadata.create_all(bind=engine)
-
-            # Manual migration check: Add youtube_link if missing
-            from sqlalchemy import text
+        # 1. Create tables if they don't exist
+        Base.metadata.create_all(bind=engine)
+        
+        # 2. Manual migration: Add youtube_link column if missing
+        db = SessionLocal()
+        try:
+            # Check if column exists
             try:
                 db.execute(text("SELECT youtube_link FROM courses LIMIT 1;"))
             except Exception:
@@ -30,6 +32,7 @@ def startup_event():
                 db.execute(text("ALTER TABLE courses ADD COLUMN youtube_link VARCHAR(500);"))
                 db.commit()
 
+            # 3. Setup default admin
             admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
             if not admin_user:
                 admin_user = models.User(
@@ -43,6 +46,7 @@ def startup_event():
             db.commit()
         finally:
             db.close()
+            
     except Exception as e:
         print(f"Startup error: {e}")
 
