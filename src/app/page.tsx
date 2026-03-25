@@ -1,24 +1,30 @@
+"use client";
+
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { Course, Module, Instructor, Plan } from '@/lib/types';
 import CourseCard from '@/components/CourseCard';
 import Link from 'next/link';
 
-export const dynamic = 'force-dynamic';
+export default function Home() {
+  const [data, setData] = useState({ courses: [], modules: [], instructors: [], plans: [] });
+  const [loading, setLoading] = useState(true);
 
-async function getHomeData() {
-  const [courses, modules, instructors, plans] = await Promise.allSettled([
-    api.getCourses(), api.getModules(), api.getInstructors(), api.getPlans(),
-  ]);
-  return {
-    courses: courses.status === 'fulfilled' ? courses.value : [],
-    modules: modules.status === 'fulfilled' ? modules.value : [],
-    instructors: instructors.status === 'fulfilled' ? instructors.value : [],
-    plans: plans.status === 'fulfilled' ? plans.value : [],
-  };
-}
+  useEffect(() => {
+    Promise.allSettled([
+      api.getCourses(), api.getModules(), api.getInstructors(), api.getPlans(),
+    ]).then(([coursesRes, modulesRes, instructorsRes, plansRes]) => {
+      setData({
+        courses: coursesRes.status === 'fulfilled' ? coursesRes.value : [],
+        modules: modulesRes.status === 'fulfilled' ? modulesRes.value : [],
+        instructors: instructorsRes.status === 'fulfilled' ? instructorsRes.value : [],
+        plans: plansRes.status === 'fulfilled' ? plansRes.value : [],
+      });
+      setLoading(false);
+    });
+  }, []);
 
-export default async function Home() {
-  const { courses, modules, instructors, plans } = await getHomeData();
+  const { courses, instructors, plans } = data;
   const featuredCourses: Course[] = courses.slice(0, 3);
 
   return (
@@ -55,8 +61,8 @@ export default async function Home() {
         <p className="section-label">Ta'lim</p>
         <h2 className="section-title">Mashhur Kurslar</h2>
         <p className="section-sub">Eng ko'p tanlangan kurslarimiz bilan tanishing.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24, marginBottom: 40 }}>
-          {featuredCourses.map((c: Course) => <CourseCard key={c.id} course={c} />)}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24, marginBottom: 40, minHeight: 200 }}>
+          {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : featuredCourses.length > 0 ? featuredCourses.map((c: Course) => <CourseCard key={c.id} course={c} />) : <div style={{ color: '#888' }}>Hozircha kurslar yo'q</div>}
         </div>
         <div style={{ textAlign: 'center' }}>
           <Link href="/kurslar" className="btn btn-dark">Barcha kurslarni ko'rish →</Link>
@@ -68,8 +74,8 @@ export default async function Home() {
         <p className="section-label">Jamoamiz</p>
         <h2 className="section-title">Ustalarimiz</h2>
         <p className="section-sub">Sohasining eng yaxshi mutaxassislari sizni o'qitadi.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 24, marginBottom: 40 }}>
-          {(instructors as Instructor[]).map((inst: Instructor) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 24, marginBottom: 40, minHeight: 200 }}>
+          {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : instructors.length > 0 ? (instructors as Instructor[]).map((inst: Instructor) => (
             <div key={inst.id} className="card" style={{ padding: '32px 24px', textAlign: 'center' }}>
               <div style={{ width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', margin: '0 auto 16px', background: inst.avatar_color }}>
                 {inst.emoji}
@@ -79,7 +85,7 @@ export default async function Home() {
               <p style={{ color: '#888', fontSize: '.82rem', marginBottom: 8 }}>{inst.experience}</p>
               <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '.9rem' }}>⭐ {inst.rating}</div>
             </div>
-          ))}
+          )) : <div style={{ color: '#888' }}>Hozircha ustalar yo'q</div>}
         </div>
       </section>
 
@@ -88,8 +94,8 @@ export default async function Home() {
         <p className="section-label" style={{ color: 'var(--gold)' }}>Reja</p>
         <h2 className="section-title section-title-light">Narxlar</h2>
         <p className="section-sub section-sub-light">O'zingizga mos rejani tanlang.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 24, maxWidth: 900, margin: '0 auto' }}>
-          {(plans as Plan[]).map((p: Plan) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 24, maxWidth: 900, margin: '0 auto', minHeight: 200 }}>
+          {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : plans.length > 0 ? (plans as Plan[]).map((p: Plan) => (
             <div key={p.id} style={{ background: p.is_featured ? 'rgba(201,137,58,.1)' : 'rgba(255,255,255,.06)', border: `2px solid ${p.is_featured ? 'var(--gold)' : 'rgba(255,255,255,.1)'}`, borderRadius: 20, padding: '36px 28px', position: 'relative' }}>
               {p.is_featured && <div className="badge-featured">💎 Mashhur</div>}
               <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.85rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>{p.name}</div>
@@ -105,7 +111,7 @@ export default async function Home() {
               </ul>
               <Link href="/register" className="btn btn-gold" style={{ width: '100%', borderRadius: 10 }}>Boshlash</Link>
             </div>
-          ))}
+          )) : <div style={{ color: '#888' }}>Hozircha rejalar yo'q</div>}
         </div>
       </section>
 

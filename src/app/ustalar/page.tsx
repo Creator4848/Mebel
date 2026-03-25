@@ -1,19 +1,24 @@
-import Image from 'next/image';
+"use client";
+
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 
-export const revalidate = 60; // Revalidate every minute
+export default function UstalarPage() {
+    const [instructors, setInstructors] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-async function getInstructors() {
-    try {
-        return await api.getInstructors();
-    } catch (e) {
-        console.error('Failed to fetch instructors:', e);
-        return [];
-    }
-}
-
-export default async function UstalarPage() {
-    const instructors = await getInstructors();
+    useEffect(() => {
+        api.getInstructors()
+            .then(data => {
+                setInstructors(data || []);
+            })
+            .catch(e => {
+                console.error('Failed to fetch instructors:', e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
     return (
         <main className="container view-animate pt-32 pb-24">
@@ -27,7 +32,9 @@ export default async function UstalarPage() {
                 </p>
             </div>
 
-            {instructors.length === 0 ? (
+            {loading ? (
+                <div className="text-center py-20 text-wood">Yuklanmoqda...</div>
+            ) : instructors.length === 0 ? (
                 <div className="text-center py-20 text-gray-500">
                     <p>Hozircha ustalar qo'shilmagan.</p>
                 </div>
