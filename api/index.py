@@ -35,7 +35,7 @@ except Exception as e:
     from fastapi import FastAPI
     app = FastAPI()
     
-    @backend_app.get("/{full_path:path}")
+    @app.get("/{full_path:path}")
     async def diagnostic(full_path: str):
         return {
             "error": "Python backend failed to start with root structure",
