@@ -25,7 +25,12 @@ export default function Home() {
   }, []);
 
   const { courses, instructors, plans } = data;
-  const featuredCourses: Course[] = courses.slice(0, 3);
+
+  // 1 ta kurs har bir kategoriyadan
+  const CATEGORIES = ['boshlangich', 'professional', 'dizayn', 'restoratsiya'];
+  const featuredCourses: Course[] = CATEGORIES.map(cat =>
+    (courses as Course[]).find((c: Course) => c.category === cat)
+  ).filter(Boolean) as Course[];
 
   return (
     <>
@@ -56,13 +61,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FEATURED COURSES */}
+      {/* FEATURED COURSES - 4 kategoriya */}
       <section style={{ padding: '80px 5%', background: 'var(--cream)' }}>
         <p className="section-label">Ta'lim</p>
-        <h2 className="section-title">Mashhur Kurslar</h2>
-        <p className="section-sub">Eng ko'p tanlangan kurslarimiz bilan tanishing.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24, marginBottom: 40, minHeight: 200 }}>
-          {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : featuredCourses.length > 0 ? featuredCourses.map((c: Course) => <CourseCard key={c.id} course={c} />) : <div style={{ color: '#888' }}>Hozircha kurslar yo'q</div>}
+        <h2 className="section-title">Yo'nalishlar</h2>
+        <p className="section-sub">4 ta asosiy yo'nalishimiz — har biridan 1 ta kurs bilan tanishing.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 28, marginBottom: 40, maxWidth: 1200, margin: '0 auto 40px' }}>
+          {loading
+            ? <div style={{ color: '#888' }}>Yuklanmoqda...</div>
+            : featuredCourses.length > 0
+              ? featuredCourses.map((c: Course) => <CourseCard key={c.id} course={c} />)
+              : <div style={{ color: '#888' }}>Hozircha kurslar yo'q</div>}
         </div>
         <div style={{ textAlign: 'center' }}>
           <Link href="/kurslar" className="btn btn-dark">Barcha kurslarni ko'rish →</Link>
@@ -70,13 +79,13 @@ export default function Home() {
       </section>
 
       {/* INSTRUCTORS PREVIEW */}
-      <section style={{ padding: '80px 5%', background: 'var(--white)' }}>
+      <section style={{ padding: '80px 5%', background: 'var(--white)', textAlign: 'center' }}>
         <p className="section-label">Jamoamiz</p>
         <h2 className="section-title">Ustalarimiz</h2>
         <p className="section-sub">Sohasining eng yaxshi mutaxassislari sizni o'qitadi.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 24, marginBottom: 40, minHeight: 200 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'center', marginBottom: 40, maxWidth: 1100, margin: '0 auto 40px' }}>
           {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : instructors.length > 0 ? (instructors as Instructor[]).map((inst: Instructor) => (
-            <div key={inst.id} className="card" style={{ padding: '32px 24px', textAlign: 'center' }}>
+            <div key={inst.id} className="card" style={{ padding: '32px 24px', textAlign: 'center', width: 220, flexShrink: 0 }}>
               <div style={{ width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', margin: '0 auto 16px', background: inst.avatar_color }}>
                 {inst.emoji}
               </div>
@@ -87,6 +96,7 @@ export default function Home() {
             </div>
           )) : <div style={{ color: '#888' }}>Hozircha ustalar yo'q</div>}
         </div>
+        <Link href="/ustalar" className="btn btn-dark">Barcha ustalarni ko'rish →</Link>
       </section>
 
       {/* PRICING PREVIEW */}
