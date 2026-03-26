@@ -15,7 +15,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 # ─── Courses ───────────────────────────────────────────────
 @router.get("/courses", response_model=List[schemas.CourseOut])
 def admin_list_courses(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    return db.query(models.Course).order_by(models.Course.id).all()
+    return db.query(models.Course).filter(models.Course.is_active == True).order_by(models.Course.id).all()
 
 @router.post("/courses", response_model=schemas.CourseOut, status_code=201)
 def admin_create_course(data: schemas.CourseCreate, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
@@ -42,7 +42,7 @@ def admin_delete_course(course_id: int, db: Session = Depends(get_db), _: models
 # ─── Modules ───────────────────────────────────────────────
 @router.get("/modules", response_model=List[schemas.ModuleOut])
 def admin_list_modules(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    return db.query(models.Module).order_by(models.Module.order).all()
+    return db.query(models.Module).filter(models.Module.is_active == True).order_by(models.Module.order).all()
 
 @router.post("/modules", response_model=schemas.ModuleOut, status_code=201)
 def admin_create_module(data: schemas.ModuleCreate, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
@@ -69,7 +69,7 @@ def admin_delete_module(module_id: int, db: Session = Depends(get_db), _: models
 # ─── Instructors ───────────────────────────────────────────
 @router.get("/instructors", response_model=List[schemas.InstructorOut])
 def admin_list_instructors(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    return db.query(models.Instructor).all()
+    return db.query(models.Instructor).filter(models.Instructor.is_active == True).all()
 
 @router.post("/instructors", response_model=schemas.InstructorOut, status_code=201)
 def admin_create_instructor(data: schemas.InstructorCreate, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
@@ -96,7 +96,7 @@ def admin_delete_instructor(inst_id: int, db: Session = Depends(get_db), _: mode
 # ─── Plans ─────────────────────────────────────────────────
 @router.get("/plans", response_model=List[schemas.PlanOut])
 def admin_list_plans(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    return db.query(models.Plan).order_by(models.Plan.price).all()
+    return db.query(models.Plan).filter(models.Plan.is_active == True).order_by(models.Plan.price).all()
 
 @router.post("/plans", response_model=schemas.PlanOut, status_code=201)
 def admin_create_plan(data: schemas.PlanCreate, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
