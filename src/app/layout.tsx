@@ -3,6 +3,7 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AiChat from '@/components/AiChat';
 
 export const metadata: Metadata = {
   title: "MebelAkademiya — O'zbekistondagi #1 Mebel Maktabi",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <AiChat />
         </AuthProvider>
       </body>
     </html>
