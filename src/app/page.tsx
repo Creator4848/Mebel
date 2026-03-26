@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { Course, Module, Instructor, Plan } from '@/lib/types';
 import CourseCard from '@/components/CourseCard';
+import HeroAiChat from '@/components/HeroAiChat';
 import Link from 'next/link';
 
 export default function Home() {
@@ -35,8 +36,9 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#2C1810 0%,#6B3A2A 100%)', display: 'flex', alignItems: 'center', padding: '100px 5% 60px', color: '#FEFCF9' }}>
-        <div style={{ maxWidth: 600 }}>
+      <section style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#2C1810 0%,#6B3A2A 100%)', display: 'flex', alignItems: 'center', padding: '100px 5% 60px', color: '#FEFCF9', gap: 48 }}>
+        {/* Left: text */}
+        <div style={{ flex: '1 1 480px', minWidth: 0 }}>
           <div style={{ display: 'inline-block', background: 'rgba(201,137,58,.2)', border: '1px solid #C9893A', color: '#C9893A', padding: '6px 16px', borderRadius: 20, fontSize: '.8rem', fontWeight: 600, marginBottom: 20 }}>
             🏆 O'zbekistondagi #1 Mebel Akademiyasi
           </div>
@@ -58,6 +60,10 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+        {/* Right: AI Chat */}
+        <div style={{ flex: '1 1 400px', minWidth: 0, maxWidth: 500 }}>
+          <HeroAiChat />
         </div>
       </section>
 
