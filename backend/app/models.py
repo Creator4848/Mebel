@@ -71,10 +71,9 @@ class Instructor(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
     role = Column(String(200), nullable=False)
-    experience = Column(String(100), nullable=True)   # "25 yil tajriba"
+    experience = Column(String(100), nullable=True)
     rating = Column(Float, default=5.0)
-    emoji = Column(String(10), default="👨‍🏫")
-    avatar_color = Column(String(200), default="linear-gradient(135deg,#A0522D,#6B3A2A)")
+    photo_url = Column(String(500), nullable=True)
     bio = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True)
 

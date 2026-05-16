@@ -8,11 +8,10 @@ export default function CourseCard({ course }: { course: Course }) {
     return (
         <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{
-                height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '3.5rem', background: course.bg_gradient,
-            }}>
-                {course.emoji}
-            </div>
+                height: 140,
+                background: course.bg_gradient,
+                borderRadius: '12px 12px 0 0',
+            }} />
             <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <span className="badge-level" style={{ background: `${course.level_color}22`, color: course.level_color, marginBottom: 12 }}>
                     {course.level}
@@ -24,9 +23,9 @@ export default function CourseCard({ course }: { course: Course }) {
                     </p>
                 )}
                 <div style={{ display: 'flex', gap: 16, color: '#888', fontSize: '.8rem', marginBottom: 16 }}>
-                    <span>⏱ {course.hours} soat</span>
-                    <span>📚 {course.lessons} dars</span>
-                    <span>⭐ {course.rating}</span>
+                    <span>{course.hours} soat</span>
+                    <span>{course.lessons} dars</span>
+                    <span>{course.rating} reyting</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: isFree ? '#2a7a4b' : 'var(--wood-warm)' }}>

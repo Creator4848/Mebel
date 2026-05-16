@@ -8,13 +8,13 @@ import { Course, Module, Instructor, Plan, User, Enrollment, Payment } from '@/l
 type Tab = 'courses' | 'modules' | 'instructors' | 'plans' | 'users' | 'enrollments' | 'payments';
 
 const TABS: { id: Tab; label: string }[] = [
-    { id: 'courses', label: '📚 Kurslar' },
-    { id: 'modules', label: '📖 Modullar' },
-    { id: 'instructors', label: '👨‍🏫 Ustalar' },
-    { id: 'plans', label: '💎 Rejalar' },
-    { id: 'users', label: '👥 Foydalanuvchilar' },
-    { id: 'enrollments', label: '📋 Yozilishlar' },
-    { id: 'payments', label: '💳 To\'lovlar' },
+    { id: 'courses', label: 'Kurslar' },
+    { id: 'modules', label: 'Modullar' },
+    { id: 'instructors', label: 'Ustalar' },
+    { id: 'plans', label: 'Rejalar' },
+    { id: 'users', label: 'Foydalanuvchilar' },
+    { id: 'enrollments', label: 'Yozilishlar' },
+    { id: 'payments', label: "To'lovlar" },
 ];
 
 // ─── Generic Modal ────────────────────────────────────────────────────────────
@@ -33,12 +33,11 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 // ─── Course Form ──────────────────────────────────────────────────────────────
 function CourseForm({ initial, onSave }: { initial?: Partial<Course>; onSave: (data: object) => void }) {
     const [d, setD] = useState({
-        emoji: '📚', title: '', category: 'boshlangich', level: "Boshlang'ich",
+        emoji: '', title: '', category: 'boshlangich', level: "Boshlang'ich",
         level_color: '#2a7a4b', bg_gradient: 'linear-gradient(135deg,#5D3A1A,#A0522D)',
         hours: 0, lessons: 0, rating: 5.0, price: 0, description: '', youtube_link: '', ...initial,
     });
 
-    // Instead of a Component <F>, we use a function returning JSX to prevent unmounts/focus loss.
     const renderField = (label: string, name: string, type = 'text', opts?: string[]) => (
         <div className="form-group">
             <label>{label}</label>
@@ -54,7 +53,6 @@ function CourseForm({ initial, onSave }: { initial?: Partial<Course>; onSave: (d
 
     return (
         <form onSubmit={e => { e.preventDefault(); onSave(d); }}>
-            {renderField('Emoji', 'emoji')}
             {renderField('Sarlavha', 'title')}
             {renderField('Kategoriya', 'category', 'text', ['boshlangich', 'professional', 'dizayn', 'restoratsiya'])}
             {renderField('Daraja', 'level', 'text', ["Boshlang'ich", "O'rta", "Professional"])}
@@ -78,7 +76,7 @@ function CourseForm({ initial, onSave }: { initial?: Partial<Course>; onSave: (d
 
 // ─── Instructor Form ──────────────────────────────────────────────────────────
 function InstructorForm({ initial, onSave }: { initial?: Partial<Instructor>; onSave: (data: object) => void }) {
-    const [d, setD] = useState({ name: '', role: '', experience: '', rating: 5.0, emoji: '👨‍🏫', avatar_color: 'linear-gradient(135deg,#A0522D,#6B3A2A)', bio: '', ...initial });
+    const [d, setD] = useState({ name: '', role: '', experience: '', rating: 5.0, photo_url: '', bio: '', ...initial });
 
     const renderField = (label: string, name: string, type = 'text') => (
         <div className="form-group">
@@ -93,8 +91,26 @@ function InstructorForm({ initial, onSave }: { initial?: Partial<Instructor>; on
             {renderField('Lavozim', 'role')}
             {renderField('Tajriba', 'experience')}
             {renderField('Reyting', 'rating', 'number')}
-            {renderField('Emoji', 'emoji')}
-            {renderField('Avatar rangi', 'avatar_color')}
+            <div className="form-group">
+                <label>Rasm URL</label>
+                <input
+                    type="url"
+                    placeholder="https://example.com/photo.jpg"
+                    value={d.photo_url || ''}
+                    onChange={e => setD({ ...d, photo_url: e.target.value })}
+                />
+                {d.photo_url && (
+                    <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <img
+                            src={d.photo_url}
+                            alt="preview"
+                            style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold)' }}
+                            onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                        <span style={{ color: '#888', fontSize: '.82rem' }}>Ko'rinish</span>
+                    </div>
+                )}
+            </div>
             <div className="form-group">
                 <label>Bio</label>
                 <textarea value={d.bio || ''} onChange={e => setD({ ...d, bio: e.target.value })} rows={2} style={{ width: '100%', padding: '12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 10, fontFamily: "'DM Sans', sans-serif", resize: 'vertical' }} />
@@ -120,8 +136,8 @@ function PlanForm({ initial, onSave }: { initial?: Partial<Plan>; onSave: (data:
                 </div>
                 {d.features.map((f, i) => (
                     <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
-                        <span style={{ flex: 1, fontSize: '.85rem' }}>✓ {f}</span>
-                        <button type="button" onClick={() => setD({ ...d, features: d.features.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
+                        <span style={{ flex: 1, fontSize: '.85rem' }}>- {f}</span>
+                        <button type="button" onClick={() => setD({ ...d, features: d.features.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer', fontSize: '1rem' }}>x</button>
                     </div>
                 ))}
             </div>
@@ -165,7 +181,7 @@ function ModuleForm({ initial, onSave }: { initial?: Partial<Module>; onSave: (d
                     <input value={topicInput} onChange={e => setTopicInput(e.target.value)} placeholder="Mavzu qo'shing" style={{ flex: 1, padding: '8px 12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 8, fontFamily: "'DM Sans', sans-serif" }} />
                     <button type="button" className="btn btn-gold" style={{ padding: '8px 16px' }} onClick={() => addItem('topics', topicInput, () => setTopicInput(''))}>+</button>
                 </div>
-                {(d.topics || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>• {t} <button type="button" onClick={() => setD({ ...d, topics: d.topics.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
+                {(d.topics || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>- {t} <button type="button" onClick={() => setD({ ...d, topics: d.topics.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>x</button></div>)}
             </div>
             <div className="form-group">
                 <label>Asboblar</label>
@@ -173,10 +189,37 @@ function ModuleForm({ initial, onSave }: { initial?: Partial<Module>; onSave: (d
                     <input value={toolInput} onChange={e => setToolInput(e.target.value)} placeholder="Asbob qo'shing" style={{ flex: 1, padding: '8px 12px', border: '2px solid rgba(44,24,16,.12)', borderRadius: 8, fontFamily: "'DM Sans', sans-serif" }} />
                     <button type="button" className="btn btn-gold" style={{ padding: '8px 16px' }} onClick={() => addItem('tools', toolInput, () => setToolInput(''))}>+</button>
                 </div>
-                {(d.tools || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>🔧 {t} <button type="button" onClick={() => setD({ ...d, tools: d.tools.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>✕</button></div>)}
+                {(d.tools || []).map((t, i) => <div key={i} style={{ fontSize: '.85rem', marginBottom: 4 }}>- {t} <button type="button" onClick={() => setD({ ...d, tools: d.tools.filter((_, j) => j !== i) })} style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer' }}>x</button></div>)}
             </div>
             <button type="submit" className="btn btn-gold" style={{ width: '100%', padding: 14, borderRadius: 10 }}>Saqlash</button>
         </form>
+    );
+}
+
+// ─── Instructor Avatar ────────────────────────────────────────────────────────
+function InstructorAvatar({ instructor, size = 40 }: { instructor: any; size?: number }) {
+    const initials = (instructor.name || '?').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
+    if (instructor.photo_url) {
+        return (
+            <img
+                src={instructor.photo_url}
+                alt={instructor.name}
+                style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }}
+                onError={e => {
+                    const el = e.target as HTMLImageElement;
+                    el.style.display = 'none';
+                    if (el.nextSibling) (el.nextSibling as HTMLElement).style.display = 'flex';
+                }}
+            />
+        );
+    }
+    return (
+        <div style={{
+            width: size, height: size, borderRadius: '50%',
+            background: 'linear-gradient(135deg,#A0522D,#6B3A2A)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontWeight: 700, fontSize: size * 0.35,
+        }}>{initials}</div>
     );
 }
 
@@ -223,27 +266,27 @@ export default function AdminPage() {
                     instructors: api.admin.createInstructor, plans: api.admin.createPlan,
                 };
                 await creators[tab](formData);
-                toast('✅ Muvaffaqiyatli qo\'shildi!');
+                toast('Muvaffaqiyatli qoshildi!');
             } else {
                 const updaters: Record<string, (id: number, d: object) => Promise<any>> = {
                     courses: api.admin.updateCourse, modules: api.admin.updateModule,
                     instructors: api.admin.updateInstructor, plans: api.admin.updatePlan,
                 };
                 await updaters[tab](modal!.item.id, formData);
-                toast('✅ Muvaffaqiyatli yangilandi!');
+                toast('Muvaffaqiyatli yangilandi!');
             }
             setModal(null); loadData();
-        } catch (e: any) { toast('❌ ' + e.message); }
+        } catch (e: any) { toast('Xato: ' + e.message); }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Rostdan ham o\'chirmoqchimisiz?')) return;
+        if (!confirm("Rostdan ham o'chirmoqchimisiz?")) return;
         const deleters: Record<string, (id: number) => Promise<any>> = {
             courses: api.admin.deleteCourse, modules: api.admin.deleteModule,
             instructors: api.admin.deleteInstructor, plans: api.admin.deletePlan,
         };
-        try { await deleters[tab](id); toast('🗑️ O\'chirildi!'); loadData(); }
-        catch (e: any) { toast('❌ ' + e.message); }
+        try { await deleters[tab](id); toast("O'chirildi!"); loadData(); }
+        catch (e: any) { toast('Xato: ' + e.message); }
     };
 
     if (loading || !user) return <div className="spinner" style={{ marginTop: 100 }} />;
@@ -253,11 +296,11 @@ export default function AdminPage() {
 
     return (
         <div style={{ paddingTop: 70, minHeight: '100vh', background: '#f8f4ef' }}>
-            {msg && <div className={`toast ${msg.startsWith('✅') ? 'success' : msg.startsWith('🗑️') ? '' : 'error'}`}>{msg}</div>}
+            {msg && <div className={`toast ${msg.startsWith('Xato') ? 'error' : 'success'}`}>{msg}</div>}
 
             <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 5%' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", color: 'var(--wood-dark)' }}>⚙️ Admin Panel</h1>
+                    <h1 style={{ fontFamily: "'Playfair Display', serif", color: 'var(--wood-dark)' }}>Admin Panel</h1>
                     <span style={{ color: '#888', fontSize: '.88rem' }}>Salom, {user.name}</span>
                 </div>
 
@@ -289,12 +332,12 @@ export default function AdminPage() {
                                 <thead>
                                     <tr>
                                         <th>#ID</th>
-                                        {tab === 'courses' && <><th>Emoji</th><th>Sarlavha</th><th>Kategoriya</th><th>Narx</th><th>⭐</th></>}
-                                        {tab === 'modules' && <><th>№</th><th>Sarlavha</th><th>Soat</th></>}
-                                        {tab === 'instructors' && <><th>Emoji</th><th>Ism</th><th>Lavozim</th><th>⭐</th></>}
+                                        {tab === 'courses' && <><th>Sarlavha</th><th>Kategoriya</th><th>Narx</th><th>Reyting</th></>}
+                                        {tab === 'modules' && <><th>No</th><th>Sarlavha</th><th>Soat</th></>}
+                                        {tab === 'instructors' && <><th>Rasm</th><th>Ism</th><th>Lavozim</th><th>Reyting</th></>}
                                         {tab === 'plans' && <><th>Ism</th><th>Narx</th><th>Mashhur</th></>}
                                         {tab === 'users' && <><th>Ism</th><th>Telefon</th><th>Rol</th><th>Sana</th></>}
-                                        {tab === 'enrollments' && <><th>Foydalanuvchi</th><th>Kurs</th><th>To'langan</th><th>Sana</th></>}
+                                        {tab === 'enrollments' && <><th>Foydalanuvchi</th><th>Kurs</th><th>Holat</th><th>Sana</th></>}
                                         {tab === 'payments' && <><th>Enrollment</th><th>Summa</th><th>Provider</th><th>Holat</th></>}
                                         {canEdit && <th>Amallar</th>}
                                     </tr>
@@ -303,18 +346,18 @@ export default function AdminPage() {
                                     {data.map((item: any) => (
                                         <tr key={item.id}>
                                             <td style={{ color: '#888', fontSize: '.8rem' }}>{item.id}</td>
-                                            {tab === 'courses' && <><td>{item.emoji}</td><td style={{ fontWeight: 500 }}>{item.title}</td><td><span style={{ background: 'rgba(44,24,16,.08)', padding: '3px 10px', borderRadius: 10, fontSize: '.78rem' }}>{item.category}</span></td><td style={{ color: item.price === 0 ? '#2a7a4b' : 'var(--wood-warm)', fontWeight: 600 }}>{item.price === 0 ? 'Bepul' : `${item.price.toLocaleString()} so'm`}</td><td>⭐ {item.rating}</td></>}
+                                            {tab === 'courses' && <><td style={{ fontWeight: 500 }}>{item.title}</td><td><span style={{ background: 'rgba(44,24,16,.08)', padding: '3px 10px', borderRadius: 10, fontSize: '.78rem' }}>{item.category}</span></td><td style={{ color: item.price === 0 ? '#2a7a4b' : 'var(--wood-warm)', fontWeight: 600 }}>{item.price === 0 ? 'Bepul' : `${item.price.toLocaleString()} so'm`}</td><td style={{ color: '#888' }}>{item.rating}</td></>}
                                             {tab === 'modules' && <><td style={{ fontWeight: 700, color: 'var(--gold)' }}>{item.number}</td><td style={{ fontWeight: 500 }}>{item.title}</td><td>{item.hours} soat</td></>}
-                                            {tab === 'instructors' && <><td>{item.emoji}</td><td style={{ fontWeight: 500 }}>{item.name}</td><td style={{ color: '#888', fontSize: '.88rem' }}>{item.role}</td><td>⭐ {item.rating}</td></>}
-                                            {tab === 'plans' && <><td style={{ fontWeight: 600 }}>{item.name}</td><td style={{ color: 'var(--gold)', fontWeight: 600 }}>{item.price.toLocaleString()} so'm</td><td>{item.is_featured ? '💎 Ha' : '—'}</td></>}
+                                            {tab === 'instructors' && <><td><InstructorAvatar instructor={item} size={36} /></td><td style={{ fontWeight: 500 }}>{item.name}</td><td style={{ color: '#888', fontSize: '.88rem' }}>{item.role}</td><td style={{ color: '#888' }}>{item.rating}</td></>}
+                                            {tab === 'plans' && <><td style={{ fontWeight: 600 }}>{item.name}</td><td style={{ color: 'var(--gold)', fontWeight: 600 }}>{item.price.toLocaleString()} so'm</td><td>{item.is_featured ? 'Ha' : '—'}</td></>}
                                             {tab === 'users' && <><td style={{ fontWeight: 500 }}>{item.name}</td><td>{item.phone}</td><td><span style={{ background: item.role === 'admin' ? 'rgba(201,137,58,.15)' : 'rgba(44,24,16,.06)', color: item.role === 'admin' ? 'var(--gold)' : '#666', padding: '3px 10px', borderRadius: 10, fontSize: '.78rem', fontWeight: 600 }}>{item.role}</span></td><td style={{ color: '#888', fontSize: '.8rem' }}>{new Date(item.created_at).toLocaleDateString('uz-UZ')}</td></>}
-                                            {tab === 'enrollments' && <><td>{item.user_id}</td><td>{item.course_id || `Reja #${item.plan_id}`}</td><td>{item.is_paid ? '✅' : '⏳'}</td><td style={{ color: '#888', fontSize: '.8rem' }}>{new Date(item.created_at).toLocaleDateString('uz-UZ')}</td></>}
+                                            {tab === 'enrollments' && <><td>{item.user_id}</td><td>{item.course_id || `Reja #${item.plan_id}`}</td><td><span style={{ background: item.is_paid ? '#2a7a4b22' : '#7a2a2a22', color: item.is_paid ? '#2a7a4b' : '#7a2a2a', padding: '3px 10px', borderRadius: 10, fontSize: '.78rem', fontWeight: 600 }}>{item.is_paid ? "To'langan" : "Kutilmoqda"}</span></td><td style={{ color: '#888', fontSize: '.8rem' }}>{new Date(item.created_at).toLocaleDateString('uz-UZ')}</td></>}
                                             {tab === 'payments' && <><td>{item.enrollment_id}</td><td style={{ fontWeight: 600 }}>{(item.amount / 100).toLocaleString()} so'm</td><td>{item.provider}</td><td><span style={{ background: item.status === 'paid' ? '#2a7a4b22' : item.status === 'failed' ? '#7a2a2a22' : '#7a5a2a22', color: item.status === 'paid' ? '#2a7a4b' : item.status === 'failed' ? '#7a2a2a' : '#7a5a2a', padding: '3px 10px', borderRadius: 10, fontSize: '.78rem', fontWeight: 600 }}>{item.status}</span></td></>}
                                             {canEdit && (
                                                 <td>
                                                     <div style={{ display: 'flex', gap: 8 }}>
-                                                        <button className="btn btn-gold" style={{ fontSize: '.78rem', padding: '5px 14px' }} onClick={() => setModal({ mode: 'edit', item })}>✏️</button>
-                                                        <button onClick={() => handleDelete(item.id)} style={{ background: '#c0392b', color: 'var(--white)', border: 'none', borderRadius: 8, padding: '5px 14px', cursor: 'pointer', fontSize: '.78rem', fontFamily: "'DM Sans', sans-serif" }}>🗑️</button>
+                                                        <button className="btn btn-gold" style={{ fontSize: '.78rem', padding: '5px 14px' }} onClick={() => setModal({ mode: 'edit', item })}>Tahrir</button>
+                                                        <button onClick={() => handleDelete(item.id)} style={{ background: '#c0392b', color: 'var(--white)', border: 'none', borderRadius: 8, padding: '5px 14px', cursor: 'pointer', fontSize: '.78rem', fontFamily: "'DM Sans', sans-serif" }}>O'chir</button>
                                                     </div>
                                                 </td>
                                             )}
@@ -332,7 +375,7 @@ export default function AdminPage() {
 
             {/* Create/Edit Modal */}
             {modal && (
-                <Modal title={modal.mode === 'create' ? 'Yangi qo\'shish' : 'Tahrirlash'} onClose={() => setModal(null)}>
+                <Modal title={modal.mode === 'create' ? "Yangi qo'shish" : 'Tahrirlash'} onClose={() => setModal(null)}>
                     {tab === 'courses' && <CourseForm initial={modal.item} onSave={handleSave} />}
                     {tab === 'modules' && <ModuleForm initial={modal.item} onSave={handleSave} />}
                     {tab === 'instructors' && <InstructorForm initial={modal.item} onSave={handleSave} />}

@@ -18,7 +18,7 @@ export default function Navbar() {
     return (
         <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
             <div className={styles.inner}>
-                <Link href="/" className={styles.logo}>🪵 MebelAkademiya</Link>
+                <Link href="/" className={styles.logo}>MebelAkademiya</Link>
 
                 <ul className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
                     <li><Link href="/kurslar" onClick={() => setMenuOpen(false)}>Kurslar</Link></li>
@@ -30,9 +30,9 @@ export default function Navbar() {
                     {user ? (
                         <>
                             {user.role === 'admin' && (
-                                <li><Link href="/admin" className={styles.adminLink} onClick={() => setMenuOpen(false)}>⚙️ Admin</Link></li>
+                                <li><Link href="/admin" className={styles.adminLink} onClick={() => setMenuOpen(false)}>Admin</Link></li>
                             )}
-                            <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>👤 {user.name.split(' ')[0]}</Link></li>
+                            <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>{user.name.split(' ')[0]}</Link></li>
                             <li>
                                 <button className="btn btn-outline" style={{ fontSize: '.85rem', padding: '8px 18px' }} onClick={() => { logout(); setMenuOpen(false); }}>
                                     Chiqish

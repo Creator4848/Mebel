@@ -5,7 +5,7 @@ export default function Footer() {
         <footer style={{ background: '#1a0d08', padding: '60px 5% 24px', color: 'rgba(255,255,255,.7)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.5fr', gap: '48px', marginBottom: '48px' }}>
                 <div>
-                    <div style={{ fontFamily: "'Playfair Display', serif", color: 'var(--white)', fontSize: '1.4rem' }}>🪵 MebelAkademiya</div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", color: 'var(--white)', fontSize: '1.4rem' }}>MebelAkademiya</div>
                     <p style={{ fontSize: '.85rem', lineHeight: 1.7, marginTop: '12px', fontWeight: 300 }}>
                         O'zbekistondagi #1 mebel ishlab chiqarish maktabi. Professional ta'lim, amaliy mashg'ulotlar va sertifikat.
                     </p>

@@ -33,8 +33,7 @@ export interface Instructor {
     role: string;
     experience?: string;
     rating: number;
-    emoji: string;
-    avatar_color: string;
+    photo_url?: string;
     bio?: string;
     is_active: boolean;
 }

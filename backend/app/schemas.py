@@ -85,8 +85,7 @@ class InstructorBase(BaseModel):
     role: str
     experience: Optional[str] = None
     rating: float = 5.0
-    emoji: str = "👨‍🏫"
-    avatar_color: str = "linear-gradient(135deg,#A0522D,#6B3A2A)"
+    photo_url: Optional[str] = None
     bio: Optional[str] = None
 
 class InstructorCreate(InstructorBase):

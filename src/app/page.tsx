@@ -2,10 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { Course, Module, Instructor, Plan } from '@/lib/types';
+import { Course, Instructor, Plan } from '@/lib/types';
 import CourseCard from '@/components/CourseCard';
 import HeroAiChat from '@/components/HeroAiChat';
 import Link from 'next/link';
+
+function InstructorAvatar({ instructor, size = 80 }: { instructor: Instructor; size?: number }) {
+    const [imgFailed, setImgFailed] = useState(false);
+    const initials = (instructor.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    if (instructor.photo_url && !imgFailed) {
+        return (
+            <img
+                src={instructor.photo_url}
+                alt={instructor.name}
+                style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold)' }}
+                onError={() => setImgFailed(true)}
+            />
+        );
+    }
+    return (
+        <div style={{
+            width: size, height: size, borderRadius: '50%',
+            background: 'linear-gradient(135deg,#A0522D,#6B3A2A)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontWeight: 700, fontSize: size * 0.32,
+            border: '2px solid var(--gold)',
+        }}>{initials}</div>
+    );
+}
 
 export default function Home() {
   const [data, setData] = useState({ courses: [], modules: [], instructors: [], plans: [] });
@@ -40,7 +64,7 @@ export default function Home() {
         {/* Left: text */}
         <div style={{ flex: '1 1 480px', minWidth: 0 }}>
           <div style={{ display: 'inline-block', background: 'rgba(201,137,58,.2)', border: '1px solid #C9893A', color: '#C9893A', padding: '6px 16px', borderRadius: 20, fontSize: '.8rem', fontWeight: 600, marginBottom: 20 }}>
-            🏆 O'zbekistondagi #1 Mebel Akademiyasi
+            O'zbekistondagi #1 Mebel Akademiyasi
           </div>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.2rem,5vw,3.5rem)', lineHeight: 1.15, marginBottom: 20 }}>
             Mebel Ustasi <span style={{ color: '#C9893A' }}>Bo'lib Chiqing</span>
@@ -92,13 +116,13 @@ export default function Home() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'center', marginBottom: 40, maxWidth: 1100, margin: '0 auto 40px' }}>
           {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : instructors.length > 0 ? (instructors as Instructor[]).map((inst: Instructor) => (
             <div key={inst.id} className="card" style={{ padding: '32px 24px', textAlign: 'center', width: 220, flexShrink: 0 }}>
-              <div style={{ width: 80, height: 80, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', margin: '0 auto 16px', background: inst.avatar_color }}>
-                {inst.emoji}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+                <InstructorAvatar instructor={inst} size={80} />
               </div>
               <h3 style={{ color: 'var(--wood-dark)', fontSize: '1.05rem', marginBottom: 6 }}>{inst.name}</h3>
               <p style={{ color: 'var(--wood-warm)', fontSize: '.85rem', marginBottom: 8 }}>{inst.role}</p>
               <p style={{ color: '#888', fontSize: '.82rem', marginBottom: 8 }}>{inst.experience}</p>
-              <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '.9rem' }}>⭐ {inst.rating}</div>
+              <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '.9rem' }}>{inst.rating} / 5.0</div>
             </div>
           )) : <div style={{ color: '#888' }}>Hozircha ustalar yo'q</div>}
         </div>
@@ -113,7 +137,7 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 24, maxWidth: 900, margin: '0 auto', minHeight: 200 }}>
           {loading ? <div style={{ color: '#888' }}>Yuklanmoqda...</div> : plans.length > 0 ? (plans as Plan[]).map((p: Plan) => (
             <div key={p.id} style={{ background: p.is_featured ? 'rgba(201,137,58,.1)' : 'rgba(255,255,255,.06)', border: `2px solid ${p.is_featured ? 'var(--gold)' : 'rgba(255,255,255,.1)'}`, borderRadius: 20, padding: '36px 28px', position: 'relative' }}>
-              {p.is_featured && <div className="badge-featured">💎 Mashhur</div>}
+              {p.is_featured && <div className="badge-featured">Mashhur</div>}
               <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.85rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>{p.name}</div>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--white)', marginBottom: 4 }}>
                 {p.price.toLocaleString()} so'm<span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.5)', fontWeight: 400 }}> /oy</span>
@@ -139,7 +163,7 @@ export default function Home() {
         </p>
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/register" className="btn btn-gold">Bepul sinov boshlash</Link>
-          <a href="tel:+998901234567" className="btn btn-outline">📞 Qo'ng'iroq qilish</a>
+          <a href="tel:+998901234567" className="btn btn-outline">Qo'ng'iroq qilish</a>
         </div>
       </section>
     </>

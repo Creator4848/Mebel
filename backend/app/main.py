@@ -48,6 +48,21 @@ def startup_event():
                 db.rollback()
                 print(f"Course migration skipped: {e}")
 
+            # instructors.photo_url (add) + drop old emoji/avatar_color columns
+            try:
+                db.execute(text("ALTER TABLE instructors ADD COLUMN IF NOT EXISTS photo_url VARCHAR(500);"))
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                print(f"Instructor photo_url migration skipped: {e}")
+            for col in ("emoji", "avatar_color"):
+                try:
+                    db.execute(text(f"ALTER TABLE instructors DROP COLUMN IF EXISTS {col};"))
+                    db.commit()
+                except Exception as e:
+                    db.rollback()
+                    print(f"Drop instructors.{col} skipped: {e}")
+
             # 3. Setup default admin
             admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
             if not admin_user:
