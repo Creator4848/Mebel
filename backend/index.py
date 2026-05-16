@@ -28,10 +28,8 @@ try:
             else:
                 await _app(scope, receive, send)
         except Exception as e:
-            # THIS IS THE TRUTH-SEEKER: Return the real error to the browser
             error_response = {
-                "error": "RUNTIME_CRASH",
-                "exception": str(e),
+                "detail": f"Server xatosi: {str(e)}",
                 "traceback": traceback.format_exc(),
                 "path": scope.get("path", "")
             }
@@ -46,17 +44,17 @@ try:
             })
 
 except Exception as e:
-    # Dependency-free diagnostic fallback for total import failures
-    import sys, os, traceback
-    error_msg = f"CRITICAL IMPORT CRASH:\nException: {str(e)}\nTraceback: {traceback.format_exc()}\nCWD: {os.getcwd()}\nPATH: {sys.path}"
-    
+    import sys, os, traceback, json
+    error_detail = f"CRITICAL IMPORT CRASH: {str(e)}"
+    error_body = json.dumps({"detail": error_detail, "traceback": traceback.format_exc()}).encode("utf-8")
+
     async def app(scope, receive, send):
         await send({
             "type": "http.response.start",
             "status": 500,
-            "headers": [[b"content-type", b"text/plain"]]
+            "headers": [[b"content-type", b"application/json"]]
         })
         await send({
             "type": "http.response.body",
-            "body": error_msg.encode("utf-8")
+            "body": error_body
         })

@@ -26,7 +26,7 @@ async def payme_create_url(
     # Determine amount
     amount = 0
     if enrollment.plan_id:
-        plan = db.query(models.models.Plan).filter(models.Plan.id == enrollment.plan_id).first()
+        plan = db.query(models.Plan).filter(models.Plan.id == enrollment.plan_id).first()
         amount = plan.price * 100 if plan else 0  # tiyin
     elif enrollment.course_id:
         course = db.query(models.Course).filter(models.Course.id == enrollment.course_id).first()

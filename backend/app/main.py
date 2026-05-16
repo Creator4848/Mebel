@@ -18,6 +18,9 @@ def startup_event():
         from sqlalchemy import text
         
         # 1. Create tables if they don't exist
+        if engine is None:
+            print("WARNING: No DATABASE_URL configured, skipping table creation.")
+            return
         Base.metadata.create_all(bind=engine)
         
         # 2. Manual migration: Add youtube_link column if missing

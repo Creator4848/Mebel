@@ -23,6 +23,9 @@ except Exception as e:
 Base = declarative_base()
 
 def get_db():
+    if engine is None:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail="Ma'lumotlar bazasi sozlanmagan. DATABASE_URL muhit o'zgaruvchisini belgilang.")
     db = SessionLocal()
     try:
         yield db
