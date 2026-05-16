@@ -26,23 +26,29 @@ def startup_event():
         # 2. Manual migrations for missing columns
         db = SessionLocal()
         try:
-            # users.name
-            try:
-                db.execute(text("SELECT name FROM users LIMIT 1;"))
-            except Exception:
-                db.rollback()
-                print("Adding missing column name to users...")
-                db.execute(text("ALTER TABLE users ADD COLUMN name VARCHAR(200) NOT NULL DEFAULT '';"))
-                db.commit()
+            # users table — add all potentially missing columns
+            user_col_migrations = [
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT '';",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20) NOT NULL DEFAULT '';",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(200);",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(300) NOT NULL DEFAULT '';",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;",
+            ]
+            for sql in user_col_migrations:
+                try:
+                    db.execute(text(sql))
+                    db.commit()
+                except Exception as e:
+                    db.rollback()
+                    print(f"User migration skipped: {e}")
 
             # courses.youtube_link
             try:
-                db.execute(text("SELECT youtube_link FROM courses LIMIT 1;"))
-            except Exception:
-                db.rollback()
-                print("Adding missing column youtube_link to courses...")
-                db.execute(text("ALTER TABLE courses ADD COLUMN youtube_link VARCHAR(500);"))
+                db.execute(text("ALTER TABLE courses ADD COLUMN IF NOT EXISTS youtube_link VARCHAR(500);"))
                 db.commit()
+            except Exception as e:
+                db.rollback()
+                print(f"Course migration skipped: {e}")
 
             # 3. Setup default admin
             admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
