@@ -75,4 +75,11 @@ def root():
 
 @app.get("/health", tags=["root"])
 def health():
-    return {"status": "ok", "env_vars": {"DB": bool(settings.DATABASE_URL)}}
+    import os
+    raw = os.environ.get("DATABASE_URL", "")
+    return {
+        "status": "ok",
+        "env_vars": {"DB": bool(settings.DATABASE_URL)},
+        "raw_db_set": bool(raw),
+        "raw_db_prefix": raw[:20] if raw else None,
+    }
