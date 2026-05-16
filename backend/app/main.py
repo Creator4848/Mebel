@@ -23,24 +23,22 @@ def startup_event():
             return
         Base.metadata.create_all(bind=engine)
         
-        # 2. Manual migrations for missing columns
+        # 2. Check schema — if users table is outdated, drop all and recreate
         db = SessionLocal()
         try:
-            # users table — add all potentially missing columns
-            user_col_migrations = [
-                "ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT '';",
-                "ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20) NOT NULL DEFAULT '';",
-                "ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(200);",
-                "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(300) NOT NULL DEFAULT '';",
-                "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;",
-            ]
-            for sql in user_col_migrations:
-                try:
-                    db.execute(text(sql))
-                    db.commit()
-                except Exception as e:
-                    db.rollback()
-                    print(f"User migration skipped: {e}")
+            try:
+                db.execute(text(
+                    "SELECT id, name, phone, email, password_hash, role, is_active, created_at "
+                    "FROM users LIMIT 0;"
+                ))
+                db.rollback()
+            except Exception:
+                db.rollback()
+                print("Schema mismatch — dropping and recreating all tables...")
+                for tbl in ["payments", "enrollments", "users", "courses", "modules", "instructors", "plans"]:
+                    db.execute(text(f"DROP TABLE IF EXISTS {tbl} CASCADE;"))
+                db.commit()
+                Base.metadata.create_all(bind=engine)
 
             # courses.youtube_link
             try:
