@@ -23,10 +23,19 @@ def startup_event():
             return
         Base.metadata.create_all(bind=engine)
         
-        # 2. Manual migration: Add youtube_link column if missing
+        # 2. Manual migrations for missing columns
         db = SessionLocal()
         try:
-            # Check if column exists
+            # users.name
+            try:
+                db.execute(text("SELECT name FROM users LIMIT 1;"))
+            except Exception:
+                db.rollback()
+                print("Adding missing column name to users...")
+                db.execute(text("ALTER TABLE users ADD COLUMN name VARCHAR(200) NOT NULL DEFAULT '';"))
+                db.commit()
+
+            # courses.youtube_link
             try:
                 db.execute(text("SELECT youtube_link FROM courses LIMIT 1;"))
             except Exception:
