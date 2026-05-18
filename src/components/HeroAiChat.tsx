@@ -82,7 +82,7 @@ export default function HeroAiChat() {
                     <div style={{ color: '#FEFCF9', fontWeight: 700, fontSize: '1rem' }}>Mebel AI Yordamchi</div>
                     <div style={{ color: '#C9893A', fontSize: '.78rem', display: 'flex', alignItems: 'center', gap: 5 }}>
                         <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} />
-                        Online • Groq AI
+                        Online
                     </div>
                 </div>
                 <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.3)', fontSize: '.75rem' }}>

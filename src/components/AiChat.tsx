@@ -95,7 +95,7 @@ export default function AiChat() {
                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(201,137,58,.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem' }}>🤖</div>
                 <div>
                     <div style={{ color: '#FEFCF9', fontWeight: 700, fontSize: '.95rem' }}>Mebel AI Yordamchi</div>
-                    <div style={{ color: '#C9893A', fontSize: '.75rem' }}>● Online — Groq AI bilan ishlaydi</div>
+                    <div style={{ color: '#C9893A', fontSize: '.75rem' }}>● Online</div>
                 </div>
                 <button onClick={() => setOpen(false)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'rgba(255,255,255,.6)', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>✕</button>
             </div>
