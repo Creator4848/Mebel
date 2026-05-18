@@ -26,6 +26,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
     phone = Column(String(20), unique=True, nullable=False, index=True)
+    username = Column(String(100), unique=True, nullable=True, index=True)
     email = Column(String(200), unique=True, nullable=True)
     password_hash = Column(String(300), nullable=False)
     role = Column(SQLEnum(UserRole), default=UserRole.user, nullable=False)

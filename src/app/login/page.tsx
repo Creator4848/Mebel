@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth-context';
 export default function LoginPage() {
     const { login } = useAuth();
     const router = useRouter();
-    const [form, setForm] = useState({ phone: '', password: '' });
+    const [form, setForm] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -33,8 +33,8 @@ export default function LoginPage() {
                 <p style={{ color: '#888', marginBottom: 28, fontSize: '.9rem' }}>Hisobingizga kiring.</p>
                 <form onSubmit={submit}>
                     <div className="form-group">
-                        <label>Telefon raqam</label>
-                        <input type="tel" placeholder="+998 90 000 00 00" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required />
+                        <label>Login</label>
+                        <input placeholder="Loginингизni kiriting" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} required />
                     </div>
                     <div className="form-group">
                         <label>Parol</label>

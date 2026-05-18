@@ -43,14 +43,14 @@ export const api = {
   getPlans: () => apiFetch('/plans'),
 
   // ─── Auth ─────────────────────────────────────────────────────────
-  register: (body: { name: string; phone: string; email?: string; password: string }) =>
+  register: (body: { name: string; phone: string; username: string; password: string }) =>
     apiFetch('/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }),
 
-  login: (body: { phone: string; password: string }) =>
+  login: (body: { username: string; password: string }) =>
     apiFetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

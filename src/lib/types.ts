@@ -51,6 +51,7 @@ export interface User {
     id: number;
     name: string;
     phone: string;
+    username?: string;
     email?: string;
     role: 'user' | 'admin';
     created_at: string;

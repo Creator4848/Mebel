@@ -8,17 +8,18 @@ from app.models import UserRole, PaymentStatus, PaymentProvider
 class UserRegister(BaseModel):
     name: str
     phone: str
-    email: Optional[str] = None
+    username: str
     password: str
 
 class UserLogin(BaseModel):
-    phone: str
+    username: str
     password: str
 
 class UserOut(BaseModel):
     id: int
     name: str
     phone: str
+    username: Optional[str] = None
     email: Optional[str] = None
     role: UserRole
     created_at: datetime

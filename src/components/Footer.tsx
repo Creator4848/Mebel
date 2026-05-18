@@ -37,7 +37,7 @@ export default function Footer() {
                 </div>
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,.08)', paddingTop: '24px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-                <p style={{ fontSize: '.82rem' }}>© 2024 MebelAkademiya. Barcha huquqlar himoyalangan.</p>
+                <p style={{ fontSize: '.82rem' }}>© 2026 MebelAkademiya. Barcha huquqlar himoyalangan.</p>
                 <div style={{ display: 'flex', gap: '20px' }}>
                     {['Maxfiylik', 'Shartlar', 'Sitemap'].map(l => (
                         <a key={l} href="#" style={{ color: 'rgba(255,255,255,.5)', fontSize: '.8rem' }}>{l}</a>

@@ -11,12 +11,12 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def register(data: schemas.UserRegister, db: Session = Depends(get_db)):
     if db.query(models.User).filter(models.User.phone == data.phone).first():
         raise HTTPException(status_code=400, detail="Bu telefon raqam allaqachon ro'yxatdan o'tgan")
-    if data.email and db.query(models.User).filter(models.User.email == data.email).first():
-        raise HTTPException(status_code=400, detail="Bu email allaqachon ro'yxatdan o'tgan")
+    if db.query(models.User).filter(models.User.username == data.username).first():
+        raise HTTPException(status_code=400, detail="Bu login allaqachon band")
     user = models.User(
         name=data.name,
         phone=data.phone,
-        email=data.email or None,
+        username=data.username,
         password_hash=hash_password(data.password),
     )
     db.add(user)
@@ -28,9 +28,9 @@ def register(data: schemas.UserRegister, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=schemas.Token)
 def login(data: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.phone == data.phone).first()
+    user = db.query(models.User).filter(models.User.username == data.username).first()
     if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Telefon raqam yoki parol noto'g'ri")
+        raise HTTPException(status_code=401, detail="Login yoki parol noto'g'ri")
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Hisob bloklangan")
     token = create_access_token({"sub": str(user.id)})

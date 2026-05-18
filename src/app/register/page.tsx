@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth-context';
 export default function RegisterPage() {
     const { login } = useAuth();
     const router = useRouter();
-    const [form, setForm] = useState({ name: '', phone: '', email: '', password: '' });
+    const [form, setForm] = useState({ name: '', phone: '', username: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export default function RegisterPage() {
         e.preventDefault();
         setError(''); setLoading(true);
         try {
-            const res = await api.register({ ...form, email: form.email || undefined });
+            const res = await api.register(form);
             login(res.access_token, res.user);
             router.push('/dashboard');
         } catch (err: any) {
@@ -41,8 +41,8 @@ export default function RegisterPage() {
                         <input type="tel" placeholder="+998 90 000 00 00" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required />
                     </div>
                     <div className="form-group">
-                        <label>Email (ixtiyoriy)</label>
-                        <input type="email" placeholder="email@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                        <label>Login</label>
+                        <input placeholder="Loginингizni kiriting" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} required />
                     </div>
                     <div className="form-group">
                         <label>Parol</label>

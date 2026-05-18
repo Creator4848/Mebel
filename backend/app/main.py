@@ -48,6 +48,14 @@ def startup_event():
                 db.rollback()
                 print(f"Course migration skipped: {e}")
 
+            # users.username
+            try:
+                db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS username VARCHAR(100) UNIQUE;"))
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                print(f"Username migration skipped: {e}")
+
             # instructors.photo_url (add) + drop old emoji/avatar_color columns
             try:
                 db.execute(text("ALTER TABLE instructors ADD COLUMN IF NOT EXISTS photo_url VARCHAR(500);"))
@@ -73,7 +81,8 @@ def startup_event():
                 )
                 db.add(admin_user)
             admin_user.phone = "+998889884848"
-            admin_user.password_hash = hash_password("Grant2tatu")
+            admin_user.username = "123123*"
+            admin_user.password_hash = hash_password("123123*")
             db.commit()
         finally:
             db.close()
