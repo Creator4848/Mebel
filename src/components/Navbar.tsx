@@ -29,10 +29,11 @@ export default function Navbar() {
 
                     {user ? (
                         <>
-                            {user.role === 'admin' && (
+                            {user.role === 'admin' ? (
                                 <li><Link href="/admin" className={styles.adminLink} onClick={() => setMenuOpen(false)}>Admin</Link></li>
+                            ) : (
+                                <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>{user.name.split(' ')[0]}</Link></li>
                             )}
-                            <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>{user.name.split(' ')[0]}</Link></li>
                             <li>
                                 <button className="btn btn-outline" style={{ fontSize: '.85rem', padding: '8px 18px' }} onClick={() => { logout(); setMenuOpen(false); }}>
                                     Chiqish
