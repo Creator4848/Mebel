@@ -267,7 +267,10 @@ export default function AdminPage() {
                 payments: api.admin.getPayments,
             };
             setData(await fetchers[tab]());
-        } catch { setData([]); }
+        } catch (err: any) { 
+            setData([]); 
+            toast('Xato: ' + (err.message || 'Yuklashda xatolik'));
+        }
         finally { setLoadingData(false); }
     }, [tab]);
 

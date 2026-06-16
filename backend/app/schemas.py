@@ -21,7 +21,7 @@ class UserOut(BaseModel):
     phone: str
     username: Optional[str] = None
     email: Optional[str] = None
-    role: UserRole
+    role: str
     created_at: Optional[datetime] = None
     model_config = {"from_attributes": True}
 
