@@ -22,7 +22,7 @@ class UserOut(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     role: UserRole
-    created_at: datetime
+    created_at: Optional[datetime] = None
     model_config = {"from_attributes": True}
 
 class Token(BaseModel):

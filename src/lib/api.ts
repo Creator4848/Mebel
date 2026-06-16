@@ -116,8 +116,12 @@ export const api = {
     deletePlan: (id: number) =>
       apiFetch(`/admin/plans/${id}`, { method: 'DELETE', headers: authHeaders() }),
 
-    // Users, Enrollments, Payments (view only)
+    // Users, Enrollments, Payments
     getUsers: () => apiFetch('/admin/users', { headers: authHeaders() }),
+    updateUserRole: (id: number, role: string) =>
+      apiFetch(`/admin/users/${id}/role?role=${role}`, { method: 'PATCH', headers: authHeaders() }),
+    deleteUser: (id: number) =>
+      apiFetch(`/admin/users/${id}`, { method: 'DELETE', headers: authHeaders() }),
     getEnrollments: () => apiFetch('/admin/enrollments', { headers: authHeaders() }),
     getPayments: () => apiFetch('/admin/payments', { headers: authHeaders() }),
   },

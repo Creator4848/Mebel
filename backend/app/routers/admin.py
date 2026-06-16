@@ -132,6 +132,16 @@ def admin_set_role(user_id: int, role: str, db: Session = Depends(get_db), _: mo
     user.role = role; db.commit()
     return {"message": "Rol o'zgartirildi"}
 
+@router.delete("/users/{user_id}")
+def admin_delete_user(user_id: int, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user: raise HTTPException(404, "Foydalanuvchi topilmadi")
+    # Also delete their enrollments and payments if any, or just let cascade handle it if configured
+    # For now simply delete the user
+    db.delete(user)
+    db.commit()
+    return {"message": "Foydalanuvchi o'chirildi"}
+
 
 # ─── Enrollments & Payments ────────────────────────────────
 @router.get("/enrollments", response_model=List[schemas.EnrollmentOut])

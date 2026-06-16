@@ -150,6 +150,23 @@ function PlanForm({ initial, onSave }: { initial?: Partial<Plan>; onSave: (data:
     );
 }
 
+// ─── User Role Form ─────────────────────────────────────────────────────────────
+function UserForm({ initial, onSave }: { initial?: Partial<User>; onSave: (data: object) => void }) {
+    const [d, setD] = useState({ role: 'user', ...initial });
+    return (
+        <form onSubmit={e => { e.preventDefault(); onSave(d); }}>
+            <div className="form-group">
+                <label>Foydalanuvchi Roli</label>
+                <select value={d.role} onChange={e => setD({ ...d, role: e.target.value })}>
+                    <option value="user">User (Oddiy)</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit" className="btn btn-gold" style={{ width: '100%', padding: 14, borderRadius: 10 }}>Saqlash</button>
+        </form>
+    );
+}
+
 // ─── Module Form ──────────────────────────────────────────────────────────────
 function ModuleForm({ initial, onSave }: { initial?: Partial<Module>; onSave: (data: object) => void }) {
     const [d, setD] = useState({ order: 1, number: '01', title: '', hours: 0, topics: [] as string[], tools: [] as string[], ...initial });
@@ -268,9 +285,10 @@ export default function AdminPage() {
                 await creators[tab](formData);
                 toast('Muvaffaqiyatli qoshildi!');
             } else {
-                const updaters: Record<string, (id: number, d: object) => Promise<any>> = {
+                const updaters: Record<string, (id: number, d: any) => Promise<any>> = {
                     courses: api.admin.updateCourse, modules: api.admin.updateModule,
                     instructors: api.admin.updateInstructor, plans: api.admin.updatePlan,
+                    users: (id, d) => api.admin.updateUserRole(id, d.role),
                 };
                 await updaters[tab](modal!.item.id, formData);
                 toast('Muvaffaqiyatli yangilandi!');
@@ -284,6 +302,7 @@ export default function AdminPage() {
         const deleters: Record<string, (id: number) => Promise<any>> = {
             courses: api.admin.deleteCourse, modules: api.admin.deleteModule,
             instructors: api.admin.deleteInstructor, plans: api.admin.deletePlan,
+            users: api.admin.deleteUser,
         };
         try { await deleters[tab](id); toast("O'chirildi!"); loadData(); }
         catch (e: any) { toast('Xato: ' + e.message); }
@@ -292,7 +311,7 @@ export default function AdminPage() {
     if (loading || !user) return <div className="spinner" style={{ marginTop: 100 }} />;
 
     const canCreate = ['courses', 'modules', 'instructors', 'plans'].includes(tab);
-    const canEdit = canCreate;
+    const canEdit = ['courses', 'modules', 'instructors', 'plans', 'users'].includes(tab);
 
     return (
         <div style={{ paddingTop: 70, minHeight: '100vh', background: '#f8f4ef' }}>
@@ -380,6 +399,7 @@ export default function AdminPage() {
                     {tab === 'modules' && <ModuleForm initial={modal.item} onSave={handleSave} />}
                     {tab === 'instructors' && <InstructorForm initial={modal.item} onSave={handleSave} />}
                     {tab === 'plans' && <PlanForm initial={modal.item} onSave={handleSave} />}
+                    {tab === 'users' && <UserForm initial={modal.item} onSave={handleSave} />}
                 </Modal>
             )}
         </div>
