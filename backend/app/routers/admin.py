@@ -123,7 +123,11 @@ def admin_delete_plan(plan_id: int, db: Session = Depends(get_db), _: models.Use
 # ─── Users ─────────────────────────────────────────────────
 @router.get("/users", response_model=List[schemas.UserOut])
 def admin_list_users(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    return db.query(models.User).order_by(models.User.created_at.desc()).all()
+    try:
+        return db.query(models.User).order_by(models.User.created_at.desc()).all()
+    except Exception as e:
+        import traceback
+        raise HTTPException(status_code=500, detail=f"DB xatosi: {str(e)} | Trace: {traceback.format_exc()}")
 
 @router.patch("/users/{user_id}/role")
 def admin_set_role(user_id: int, role: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
