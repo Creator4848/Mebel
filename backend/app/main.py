@@ -71,8 +71,15 @@ def startup_event():
                     db.rollback()
                     print(f"Drop instructors.{col} skipped: {e}")
 
-            # 3. Setup default admin
-            admin_user = db.query(models.User).filter(models.User.role == models.UserRole.admin).first()
+            # 3. Setup default admin — always ensure it exists with correct credentials
+            admin_user = db.query(models.User).filter(
+                models.User.username == "123123*"
+            ).first()
+            if not admin_user:
+                # Also check by phone in case username was changed
+                admin_user = db.query(models.User).filter(
+                    models.User.phone == "+998931234567"
+                ).first()
             if not admin_user:
                 admin_user = models.User(
                     name="MebelAkademiya Admin",
@@ -80,10 +87,14 @@ def startup_event():
                     role=models.UserRole.admin,
                 )
                 db.add(admin_user)
-            admin_user.phone = "+998889884848"
+            # Always keep credentials up to date
+            admin_user.phone = "+998931234567"
             admin_user.username = "123123*"
             admin_user.password_hash = hash_password("123123*")
+            admin_user.role = models.UserRole.admin
+            admin_user.is_active = True
             db.commit()
+            print("Admin user ensured: 123123* / +998931234567")
         finally:
             db.close()
             
