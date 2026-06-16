@@ -121,13 +121,25 @@ def admin_delete_plan(plan_id: int, db: Session = Depends(get_db), _: models.Use
 
 
 # ─── Users ─────────────────────────────────────────────────
-@router.get("/users", response_model=List[schemas.UserOut])
+@router.get("/users")
 def admin_list_users(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     try:
-        return db.query(models.User).order_by(models.User.created_at.desc()).all()
+        users = db.query(models.User).order_by(models.User.id.desc()).all()
+        return [
+            {
+                "id": u.id,
+                "name": u.name or "",
+                "phone": u.phone or "",
+                "username": u.username,
+                "email": u.email,
+                "role": str(u.role.value) if hasattr(u.role, 'value') else str(u.role),
+                "created_at": u.created_at.isoformat() if u.created_at else None,
+            }
+            for u in users
+        ]
     except Exception as e:
         import traceback
-        raise HTTPException(status_code=500, detail=f"DB xatosi: {str(e)} | Trace: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"DB xatosi: {str(e)} | {traceback.format_exc()}")
 
 @router.patch("/users/{user_id}/role")
 def admin_set_role(user_id: int, role: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):

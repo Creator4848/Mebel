@@ -17,11 +17,11 @@ class UserLogin(BaseModel):
 
 class UserOut(BaseModel):
     id: int
-    name: str
-    phone: str
+    name: Optional[str] = None
+    phone: Optional[str] = None
     username: Optional[str] = None
     email: Optional[str] = None
-    role: str
+    role: Optional[str] = None
     created_at: Optional[datetime] = None
     model_config = {"from_attributes": True}
 
