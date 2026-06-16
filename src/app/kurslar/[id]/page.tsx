@@ -4,13 +4,19 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Course } from '@/lib/types';
+import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
+import AuthModal from '@/components/AuthModal';
 
 export default function CourseDetailPage() {
     const { id } = useParams();
     const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
+
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [videoUnlocked, setVideoUnlocked] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -19,6 +25,11 @@ export default function CourseDetailPage() {
             .catch(() => router.push('/kurslar'))
             .finally(() => setLoading(false));
     }, [id]);
+
+    // Foydalanuvchi login qilganda videoni ochish
+    useEffect(() => {
+        if (user) setVideoUnlocked(true);
+    }, [user]);
 
     const getYoutubeId = (url?: string) => {
         if (!url) return null;
@@ -31,11 +42,12 @@ export default function CourseDetailPage() {
     if (!course) return null;
 
     const youtubeId = getYoutubeId(course.youtube_link);
+    const isLoggedIn = !!user && !authLoading;
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--cream)', padding: '120px 5% 80px' }}>
             <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-                {/* Path */}
+                {/* Breadcrumb */}
                 <div style={{ marginBottom: 24, fontSize: '.9rem', color: '#888' }}>
                     <Link href="/" style={{ color: 'var(--wood-warm)' }}>Bosh sahifa</Link> /
                     <Link href="/kurslar" style={{ color: 'var(--wood-warm)', marginLeft: 8 }}>Kurslar</Link> /
@@ -74,24 +86,106 @@ export default function CourseDetailPage() {
                             </div>
                         </div>
 
-                        {/* Video Player */}
+                        {/* ─── Video Section ─── */}
                         {youtubeId ? (
                             <div style={{ marginBottom: 40 }}>
                                 <h2 style={{ fontSize: '1.5rem', fontFamily: "'Playfair Display', serif", color: 'var(--wood-dark)', marginBottom: 16 }}>
                                     Kursga kirish darsi
                                 </h2>
-                                <div style={{
-                                    position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
-                                    borderRadius: 20, background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,0.15)'
-                                }}>
-                                    <iframe
-                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                                        src={`https://www.youtube.com/embed/${youtubeId}`}
-                                        title="Course Video"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    />
-                                </div>
+
+                                {/* Foydalanuvchi kirgan va video ochilgan */}
+                                {(isLoggedIn || videoUnlocked) ? (
+                                    <div style={{
+                                        position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
+                                        borderRadius: 20, background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,0.15)'
+                                    }}>
+                                        <iframe
+                                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                                            src={`https://www.youtube.com/embed/${youtubeId}`}
+                                            title="Course Video"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                ) : (
+                                    /* Video blokirovka ko'rinishi */
+                                    <div
+                                        onClick={() => setShowAuthModal(true)}
+                                        style={{
+                                            position: 'relative',
+                                            paddingBottom: '56.25%',
+                                            height: 0,
+                                            overflow: 'hidden',
+                                            borderRadius: 20,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {/* Thumbnail */}
+                                        <img
+                                            src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
+                                            alt="Video thumbnail"
+                                            style={{
+                                                position: 'absolute', top: 0, left: 0,
+                                                width: '100%', height: '100%',
+                                                objectFit: 'cover',
+                                                filter: 'brightness(0.4) blur(2px)',
+                                            }}
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+                                            }}
+                                        />
+                                        {/* Lock overlay */}
+                                        <div style={{
+                                            position: 'absolute', inset: 0,
+                                            display: 'flex', flexDirection: 'column',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            gap: 16,
+                                            background: 'linear-gradient(135deg, rgba(44,24,16,0.6), rgba(44,24,16,0.4))',
+                                        }}>
+                                            <div style={{
+                                                width: 80, height: 80,
+                                                background: 'rgba(255,255,255,0.15)',
+                                                backdropFilter: 'blur(10px)',
+                                                border: '2px solid rgba(255,255,255,0.3)',
+                                                borderRadius: '50%',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontSize: '2.2rem',
+                                                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                                                transition: 'transform .2s',
+                                            }}>
+                                                🔒
+                                            </div>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <p style={{
+                                                    color: 'var(--white)', fontWeight: 700,
+                                                    fontSize: '1.2rem', marginBottom: 6,
+                                                    textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                                                }}>
+                                                    Videoni ko'rish uchun kirish kerak
+                                                </p>
+                                                <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '.9rem' }}>
+                                                    Bosing va ro'yxatdan o'ting — bepul!
+                                                </p>
+                                            </div>
+                                            <button
+                                                style={{
+                                                    background: 'linear-gradient(135deg, var(--gold), #e8a830)',
+                                                    color: 'var(--wood-dark)',
+                                                    border: 'none',
+                                                    padding: '12px 32px',
+                                                    borderRadius: 50,
+                                                    fontWeight: 700,
+                                                    fontSize: '1rem',
+                                                    cursor: 'pointer',
+                                                    boxShadow: '0 4px 20px rgba(201,137,58,0.5)',
+                                                    fontFamily: "'DM Sans', sans-serif",
+                                                }}
+                                            >
+                                                🎬 Videoni ko'rish
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div style={{
@@ -132,13 +226,23 @@ export default function CourseDetailPage() {
                                 </div>
                             </div>
 
-                            <Link
-                                href={`/checkout?course_id=${course.id}`}
-                                className="btn btn-gold"
-                                style={{ width: '100%', padding: '16px 0', fontSize: '1.1rem', borderRadius: 14, marginBottom: 20 }}
-                            >
-                                Kursga yozilish →
-                            </Link>
+                            {isLoggedIn ? (
+                                <Link
+                                    href={`/checkout?course_id=${course.id}`}
+                                    className="btn btn-gold"
+                                    style={{ width: '100%', padding: '16px 0', fontSize: '1.1rem', borderRadius: 14, marginBottom: 20, display: 'block', textAlign: 'center' }}
+                                >
+                                    Kursga yozilish →
+                                </Link>
+                            ) : (
+                                <button
+                                    onClick={() => setShowAuthModal(true)}
+                                    className="btn btn-gold"
+                                    style={{ width: '100%', padding: '16px 0', fontSize: '1.1rem', borderRadius: 14, marginBottom: 20, cursor: 'pointer' }}
+                                >
+                                    Kursga yozilish →
+                                </button>
+                            )}
 
                             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12 }}>
                                 {[
@@ -157,13 +261,21 @@ export default function CourseDetailPage() {
                         <div style={{ marginTop: 24, padding: 20, textAlign: 'center' }}>
                             <p style={{ fontSize: '.85rem', color: '#888' }}>
                                 Savollaringiz bormi? <br />
-                                <a href="tel:+998901234567" style={{ color: 'var(--gold)', fontWeight: 600 }}>Biz bilan bog'laning</a>
+                                <a href="tel:+998889884848" style={{ color: 'var(--gold)', fontWeight: 600 }}>Biz bilan bog'laning</a>
                             </p>
                         </div>
                     </aside>
 
                 </div>
             </div>
+
+            {/* Auth Modal */}
+            {showAuthModal && (
+                <AuthModal
+                    onClose={() => setShowAuthModal(false)}
+                    onSuccess={() => setVideoUnlocked(true)}
+                />
+            )}
         </main>
     );
 }
